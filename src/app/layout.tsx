@@ -62,6 +62,7 @@ export default function RootLayout({
           glow={0.5}
           shading={0.65}
           force={1.1}
+          quality="low"
           zIndex={0}
         />
         {children}

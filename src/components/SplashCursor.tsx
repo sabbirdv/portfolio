@@ -64,13 +64,13 @@ interface Pointer {
 }
 
 const QUALITY: Record<string, { sim: number; dye: number; iterations: number }> = {
-  low: { sim: 64, dye: 512, iterations: 10 },
-  medium: { sim: 96, dye: 1024, iterations: 16 },
-  high: { sim: 128, dye: 1440, iterations: 20 }
+  low: { sim: 48, dye: 384, iterations: 8 },
+  medium: { sim: 64, dye: 512, iterations: 12 },
+  high: { sim: 80, dye: 768, iterations: 16 }
 };
-const BLOOM_RESOLUTION = 256;
-const BLOOM_ITERATIONS = 4;
-const BLOOM_THRESHOLD = 0.3;
+const BLOOM_RESOLUTION = 128;
+const BLOOM_ITERATIONS = 2;
+const BLOOM_THRESHOLD = 0.35;
 const BLOOM_KNEE = 0.7;
 
 const ROOT = 'pointer-events-none fixed inset-0 data-[contained]:absolute';
@@ -577,7 +577,9 @@ function SplashCursor({
     };
 
     const fit = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      const maxDpr = isMobile ? 1.0 : 1.25;
+      const ratio = Math.min(window.devicePixelRatio || 1, maxDpr);
       const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
       const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
       if (canvas.width === width && canvas.height === height) return;
@@ -877,8 +879,9 @@ function SplashCursor({
     const pointers = new Map<string, Pointer>();
     const bursts: { x: number; y: number }[] = [];
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
     const introPointer: Pointer = { x: 0, y: 0, px: 0, py: 0, ready: false, moved: false, offset: Math.random() };
-    let introStart = introRef.current && !reduced ? performance.now() + 150 : -1;
+    let introStart = introRef.current && !reduced && !isMobileDevice ? performance.now() + 150 : -1;
     let raf = 0;
     let last = 0;
     let lastActivity = performance.now();
@@ -930,6 +933,7 @@ function SplashCursor({
     };
 
     const wake = () => {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) return;
       lastActivity = performance.now();
       if (raf || disposed || lost) return;
       last = performance.now();
@@ -983,19 +987,11 @@ function SplashCursor({
       // Left click only (button === 0); middle wheel click or right click will never trigger bursts
       if (event.pointerType !== 'touch' && event.button === 0 && !isScrolling) press(event.clientX, event.clientY);
     };
-    const onTouchStart = (event: TouchEvent) => {
-      Array.from(event.changedTouches).forEach(touch => {
-        pointers.delete(`t${touch.identifier}`);
-        track(`t${touch.identifier}`, touch.clientX, touch.clientY);
-        press(touch.clientX, touch.clientY);
-      });
+    const onTouchStart = () => {
+      // Intentionally bypassed on touch screens to ensure silky smooth 60-120fps native scrolling
     };
-    const onTouchMove = (event: TouchEvent) => {
-      Array.from(event.changedTouches).forEach(touch => track(`t${touch.identifier}`, touch.clientX, touch.clientY));
-    };
-    const onTouchEnd = (event: TouchEvent) => {
-      Array.from(event.changedTouches).forEach(touch => pointers.delete(`t${touch.identifier}`));
-    };
+    const onTouchMove = () => {};
+    const onTouchEnd = () => {};
     const onLeave = () => {
       pointers.forEach(pointer => {
         pointer.ready = false;

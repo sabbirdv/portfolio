@@ -148,9 +148,9 @@ export default function HeroProjects() {
   // Smooth scroll interpolation from 0 (Hero top) to 480px (entering Projects Grid)
   const rawProgress = useTransform(scrollY, [0, 480], [0, 1]);
   const smoothProgress = useSpring(rawProgress, {
-    stiffness: 260,
-    damping: 30,
-    mass: 0.5
+    stiffness: 300,
+    damping: 35,
+    mass: 0.2
   });
 
   // Hero headline & bio fade slightly as user scrolls down
