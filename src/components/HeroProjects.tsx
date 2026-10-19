@@ -391,13 +391,10 @@ function ProjectCardItem({
         className="w-full h-full transform-gpu will-change-transform overflow-visible origin-center rounded-2xl sm:rounded-3xl"
       >
         <div
-          className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#0A0F1D] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
+          className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#070D18] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
         >
-          {/* Specular Diagonal Glass Highlight */}
-          <div className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* Full-bleed Project Image - 100% visible, bright, and vibrant (NO DARK OVERLAY ON IMAGE!) */}
-          <div className="absolute inset-0 -z-10 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#070D18]">
+          {/* Full-bleed Project Image - z-0 sits above background so it is 100% bright and visible */}
+          <div className="absolute inset-0 z-0 rounded-2xl sm:rounded-3xl overflow-hidden">
             <Image
               src={project.image}
               alt={project.title}
@@ -409,9 +406,12 @@ function ProjectCardItem({
             {/* Subtle bottom shadow overlay ONLY behind text for pristine legibility - top 70% is crystal clear! */}
             <motion.div
               style={{ opacity: detailsOpacity }}
-              className="absolute inset-x-0 bottom-0 h-36 rounded-b-2xl sm:rounded-b-3xl bg-gradient-to-t from-[#05070A]/95 via-[#05070A]/50 to-transparent pointer-events-none"
+              className="absolute inset-x-0 bottom-0 h-40 rounded-b-2xl sm:rounded-b-3xl bg-gradient-to-t from-[#05070A]/95 via-[#05070A]/50 to-transparent pointer-events-none z-[1]"
             />
           </div>
+
+          {/* Specular Diagonal Glass Highlight */}
+          <div className="pointer-events-none absolute inset-0 z-[1] rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Stretched Link for the entire card (Live Demo) */}
           <a
