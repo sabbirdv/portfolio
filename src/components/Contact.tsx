@@ -21,10 +21,10 @@ export default function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="glass-panel relative max-w-3xl mx-auto rounded-3xl p-8 sm:p-12 lg:p-14 text-center flex flex-col items-center gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
+        className="glass-panel glass-highlight-top relative max-w-3xl mx-auto rounded-3xl p-8 sm:p-12 lg:p-14 text-center flex flex-col items-center gap-8"
       >
         {/* Top: Avatar and Profile Info */}
-        <div className="flex items-center gap-3.5 p-2 rounded-full bg-white/5 border border-white/10 pr-5">
+        <div className="flex items-center gap-3.5 p-2 rounded-full glass-pill pr-5">
           <div className="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)]">
             <Image
               src={portfolioData.avatar}
@@ -64,7 +64,7 @@ export default function Contact() {
             target="_blank"
             rel="noopener noreferrer"
             title="Compose message in Gmail"
-            className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#070D18] border border-cyan-400 text-white font-medium text-xs sm:text-sm shadow-[0_0_20px_rgba(0,240,255,0.35)] hover:bg-[#00F0FF] hover:text-black hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#070D18]/90 border border-cyan-400/80 text-white font-medium text-xs sm:text-sm shadow-[0_0_20px_rgba(0,240,255,0.35),_inset_0_1px_1px_rgba(255,255,255,0.2)] hover:bg-[#00F0FF] hover:text-black hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
             <Mail className="w-4 h-4 text-[#00F0FF] group-hover:text-black transition-colors" />
             <span>Send Email via Gmail</span>
@@ -76,7 +76,7 @@ export default function Contact() {
             href={portfolioData.socials.find((s) => s.name === "LinkedIn")?.url || "https://linkedin.com"}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,240,255,0.35)] text-slate-200 hover:text-white font-medium text-xs sm:text-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02]"
+            className="group inline-flex items-center gap-2 px-5 py-3 rounded-full glass-btn-secondary text-slate-200 hover:text-white font-medium text-xs sm:text-sm"
           >
             <LinkedinIcon className="w-4 h-4 text-[#00F0FF]" />
             <span>LinkedIn</span>
@@ -88,7 +88,7 @@ export default function Contact() {
             href={portfolioData.socials.find((s) => s.name === "GitHub")?.url || "https://github.com/sabbirdv"}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,240,255,0.35)] text-slate-200 hover:text-white font-medium text-xs sm:text-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02]"
+            className="group inline-flex items-center gap-2 px-5 py-3 rounded-full glass-btn-secondary text-slate-200 hover:text-white font-medium text-xs sm:text-sm"
           >
             <GithubIcon className="w-4 h-4 text-[#00F0FF]" />
             <span>GitHub</span>

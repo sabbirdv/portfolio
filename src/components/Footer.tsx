@@ -44,7 +44,7 @@ export default function Footer() {
               className="text-lg sm:text-2xl font-bold text-white hover:text-[#00F0FF] transition-colors inline-flex items-center gap-2 group"
             >
               <span>{portfolioData.email}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 group-hover:bg-[#00F0FF] group-hover:text-black font-mono transition-colors">
+              <span className="text-xs px-2.5 py-0.5 rounded-full glass-pill text-cyan-400 group-hover:bg-[#00F0FF] group-hover:text-black font-mono transition-colors">
                 Gmail ↗
               </span>
             </a>
@@ -62,7 +62,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:border-cyan-400 hover:text-[#00F0FF] hover:shadow-[0_0_15px_rgba(0,240,255,0.4)] flex items-center justify-center text-slate-300 transition-all"
+                  className="w-10 h-10 rounded-full glass-pill hover:border-cyan-400 hover:text-[#00F0FF] flex items-center justify-center text-slate-300 transition-all cursor-pointer"
                 >
                   {social.name === "GitHub" && <GithubIcon className="w-4 h-4" />}
                   {social.name === "LinkedIn" && <LinkedinIcon className="w-4 h-4" />}

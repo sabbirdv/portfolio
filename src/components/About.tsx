@@ -14,10 +14,10 @@ export default function About() {
       <div className="pointer-events-none absolute right-1/4 bottom-1/4 w-[550px] h-[550px] ambient-glow-purple rounded-full blur-[110px] opacity-20 -z-10" />
 
       {/* Main Glassmorphic Panel */}
-      <div className="glass-panel rounded-3xl p-8 sm:p-12 lg:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+      <div className="glass-panel glass-highlight-top rounded-3xl p-8 sm:p-12 lg:p-14">
         {/* Section Title */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-[#00F0FF] text-xs font-mono uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill text-[#00F0FF] text-xs font-mono uppercase tracking-wider mb-2">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>Profile &amp; Background</span>
           </div>
@@ -32,7 +32,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left column: Photo card with verified socials */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            <div className="relative group max-w-sm w-full mx-auto lg:mx-0 rounded-3xl overflow-hidden bg-[#070D18] border border-cyan-500/30 p-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
+            <div className="relative group max-w-sm w-full mx-auto lg:mx-0 rounded-3xl overflow-hidden glass-card glass-highlight-top p-3 transition-all duration-300 hover:border-cyan-400/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5),_0_0_25px_rgba(0,240,255,0.2)]">
               <div className="relative aspect-[4/4.8] w-full rounded-2xl overflow-hidden">
                 <Image
                   src={portfolioData.avatar}
@@ -44,7 +44,7 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05070A] via-transparent to-transparent opacity-80" />
 
                 {/* Social icons pill overlay at bottom of photo */}
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2.5 p-2 rounded-full bg-[#05070A]/85 backdrop-blur-xl border border-white/15 shadow-xl">
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2.5 p-2 rounded-full glass-pill shadow-xl">
                   {portfolioData.socials.map((social) => (
                     <a
                       key={social.name}
@@ -89,9 +89,9 @@ export default function About() {
             ))}
 
             {/* Exact README.md Highlights Checklist */}
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-5 border-t border-white/10">
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-5 border-t border-white/10">
               {portfolioData.highlights.map((item) => (
-                <div key={item} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
+                <div key={item} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs sm:text-sm text-slate-200 hover:border-cyan-500/30 hover:bg-white/[0.06] transition-all">
                   <CheckCircle2 className="w-4 h-4 text-[#00F0FF] shrink-0 mt-0.5" />
                   <span>{item}</span>
                 </div>

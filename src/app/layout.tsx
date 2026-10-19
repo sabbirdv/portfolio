@@ -64,7 +64,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen font-sans bg-[#05070A] text-slate-100 cyber-grid-bg antialiased selection:bg-[#00F0FF] selection:text-black">
+      <body className="min-h-screen font-sans bg-[#05070A] text-slate-100 ambient-mesh-bg cyber-grid-bg antialiased selection:bg-[#00F0FF] selection:text-black">
         <SplashCursor
           colors={['#00F0FF', '#10B981', '#A855F7', '#00FF88', '#3B82F6', '#EC4899']}
           rainbow={false}

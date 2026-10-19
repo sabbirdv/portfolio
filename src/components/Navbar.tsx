@@ -85,10 +85,10 @@ export default function Navbar() {
           damping: 34,
           mass: 0.6
         }}
-        className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-xl border transition-all duration-300 max-w-[calc(100vw-1.5rem)] ${
+        className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-md border transition-all duration-300 max-w-[calc(100vw-1.5rem)] ${
           isScrolled
-            ? "bg-[#070B14]/92 border-cyan-500/35 shadow-[0_8px_30px_rgba(0,240,255,0.22)] ring-1 ring-cyan-500/20"
-            : "bg-[#070B14]/85 border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.65)] ring-1 ring-white/5"
+            ? "bg-[#070B14]/85 border-cyan-500/40 shadow-[0_8px_32px_rgba(0,240,255,0.22),_inset_0_1px_1px_rgba(255,255,255,0.2)]"
+            : "bg-[#070B14]/75 border-white/18 shadow-[0_8px_32px_rgba(0,0,0,0.4),_inset_0_1px_1px_rgba(255,255,255,0.15)]"
         } px-3 sm:px-4 py-2 gap-2 sm:gap-3`}
       >
         {/* Left: Brand Icon + Sabbir Hasan */}
@@ -129,18 +129,18 @@ export default function Navbar() {
                       key={link.name}
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className="px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-150"
+                      className="px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] transition-all duration-150"
                     >
                       {link.name}
                     </a>
                   ))}
                 </div>
 
-                {/* Glowing CTA Button */}
+                {/* Glowing Glass CTA Button */}
                 <a
                   href="#contact"
                   onClick={(e) => handleNavClick(e, "#contact")}
-                  className="relative inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold text-black bg-gradient-to-r from-white to-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shrink-0"
+                  className="glass-btn-primary relative inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold text-black shrink-0"
                 >
                   <span>Hire Me</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export default function Navbar() {
                   type="button"
                   onClick={() => setIsDesktopExpanded(true)}
                   aria-label="Expand to full navigation"
-                  className="p-1.5 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition-all"
+                  className="p-1.5 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
                 >
                   <MoreHorizontal className="w-4 h-4 text-[#00F0FF]" />
                 </button>
@@ -188,7 +188,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={(e) => handleNavClick(e, "#contact")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold text-black bg-gradient-to-r from-white to-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)] active:scale-95 transition-transform"
+            className="glass-btn-primary inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold text-black active:scale-95 transition-transform"
           >
             <span>Hire</span>
             <ArrowUpRight className="w-3 h-3" />
@@ -200,7 +200,7 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile navigation menu"
             aria-expanded={isMobileMenuOpen}
-            className="p-1.5 rounded-full text-slate-200 hover:text-white bg-white/5 border border-white/15 hover:border-cyan-400 hover:bg-cyan-500/10 transition-colors active:scale-95"
+            className="p-1.5 rounded-full text-slate-200 hover:text-white glass-pill hover:border-cyan-400 active:scale-95 cursor-pointer"
           >
             {isMobileMenuOpen ? (
               <X className="w-4 h-4 text-[#00F0FF]" />
@@ -221,7 +221,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.96 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="pointer-events-auto mt-2 w-[calc(100vw-1.5rem)] max-w-xs rounded-2xl bg-[#070B14]/96 border border-cyan-500/35 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3 flex flex-col gap-1 z-50 md:hidden"
+            className="pointer-events-auto mt-2 w-[calc(100vw-1.5rem)] max-w-xs rounded-2xl bg-[#070B14]/90 border border-white/20 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.7),_inset_0_1px_1px_rgba(255,255,255,0.15)] p-3.5 flex flex-col gap-1.5 z-50 md:hidden"
           >
             {/* Nav links */}
             {portfolioData.navLinks.map((link) => (
@@ -236,7 +236,7 @@ export default function Navbar() {
               </a>
             ))}
 
-            <div className="h-px w-full bg-white/10 my-1.5" />
+            <div className="h-px w-full bg-white/10 my-1" />
 
             {/* Quick Contact & Socials in Mobile Menu */}
             <div className="flex items-center justify-between px-2 pt-1 pb-1">
@@ -246,7 +246,7 @@ export default function Navbar() {
                   href={portfolioData.socials.find((s) => s.name === "GitHub")?.url || "https://github.com/sabbirdv"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-400"
+                  className="p-1.5 rounded-full glass-pill text-slate-300 hover:text-white hover:border-cyan-400"
                   aria-label="GitHub"
                 >
                   <GithubIcon className="w-3.5 h-3.5" />
@@ -255,7 +255,7 @@ export default function Navbar() {
                   href={portfolioData.socials.find((s) => s.name === "LinkedIn")?.url || "https://linkedin.com"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-400"
+                  className="p-1.5 rounded-full glass-pill text-slate-300 hover:text-white hover:border-cyan-400"
                   aria-label="LinkedIn"
                 >
                   <LinkedinIcon className="w-3.5 h-3.5" />
@@ -264,7 +264,7 @@ export default function Navbar() {
                   href={`https://mail.google.com/mail/?view=cm&fs=1&to=${portfolioData.email}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1.5 rounded-full bg-white/5 border border-white/10 text-[#00F0FF] hover:text-white hover:border-cyan-400"
+                  className="p-1.5 rounded-full glass-pill text-[#00F0FF] hover:text-white hover:border-cyan-400"
                   aria-label="Gmail"
                 >
                   <Mail className="w-3.5 h-3.5" />

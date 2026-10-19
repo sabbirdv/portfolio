@@ -15,12 +15,12 @@ export default function Toolkit() {
       <div className="pointer-events-none absolute left-1/4 top-1/2 -translate-y-1/2 w-[600px] h-[600px] ambient-glow-cyan rounded-full blur-[120px] opacity-20 -z-10" />
 
       {/* Main Glassmorphic Wrapper */}
-      <div className="glass-panel rounded-3xl p-8 sm:p-12 lg:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+      <div className="glass-panel glass-highlight-top rounded-3xl p-8 sm:p-12 lg:p-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Heading & Tech Stack Grid */}
           <div className="lg:col-span-7 flex flex-col gap-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-[#00F0FF] text-xs font-mono uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill text-[#00F0FF] text-xs font-mono uppercase tracking-wider mb-2">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Technologies</span>
               </div>
@@ -51,20 +51,19 @@ export default function Toolkit() {
                       damping: 24,
                       delay: index * 0.035
                     }}
-                    whileHover={{ y: -2, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onMouseEnter={() => setHoveredSkill(tech.name)}
                     onMouseLeave={() => setHoveredSkill(null)}
-                    className="group relative flex flex-col items-center justify-center aspect-square rounded-2xl bg-[#090E18]/85 border border-white/10 hover:border-cyan-400/70 hover:shadow-[0_0_18px_rgba(0,240,255,0.25)] backdrop-blur-xl cursor-pointer transition-colors duration-200"
+                    className="group relative flex flex-col items-center justify-center aspect-square rounded-2xl glass-card glass-card-interactive cursor-pointer p-3"
                   >
-                    {/* Authentic Brand Logo (No excessive inner scaling) */}
-                    <div className="flex items-center justify-center p-3">
+                    {/* Authentic Brand Logo */}
+                    <div className="flex items-center justify-center">
                       <TechIcon id={tech.id} className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-sm" />
                     </div>
 
-                    {/* Floating Pill Tooltip (matching screenshot: black pill directly above card) */}
+                    {/* Floating Pill Tooltip */}
                     <div
-                      className={`pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full bg-black border border-white/20 px-3 py-1 text-xs font-semibold text-white shadow-xl transition-all duration-200 ${
+                      className={`pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full bg-[#05070A]/95 border border-white/20 px-3 py-1 text-xs font-semibold text-white shadow-xl backdrop-blur-md transition-all duration-200 ${
                         hoveredSkill === tech.name
                           ? "opacity-100 -translate-y-1"
                           : "opacity-0 translate-y-1"
@@ -92,9 +91,9 @@ export default function Toolkit() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.07 }}
-                  className="group p-4 rounded-2xl bg-[#070D18]/70 border border-white/10 hover:border-cyan-400/50 hover:bg-[#0B1322]/90 transition-all duration-200 flex items-center gap-3.5 shadow-sm"
+                  className="group p-4 rounded-2xl glass-card glass-card-interactive flex items-center gap-3.5"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-black/60 border border-white/10 flex items-center justify-center text-[#00F0FF] group-hover:border-cyan-400/40 group-hover:shadow-[0_0_12px_rgba(0,240,255,0.3)] transition-all shrink-0">
+                  <div className="w-8 h-8 rounded-xl glass-pill flex items-center justify-center text-[#00F0FF] group-hover:border-cyan-400/50 group-hover:shadow-[0_0_12px_rgba(0,240,255,0.3)] transition-all shrink-0">
                     <CheckCircle2 className="w-4 h-4 text-[#00F0FF]" />
                   </div>
                   <span className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
@@ -110,7 +109,7 @@ export default function Toolkit() {
                 href={portfolioData.socials.find((s) => s.name === "GitHub")?.url || "https://github.com/sabbirdv"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 text-xs font-mono text-cyan-300 hover:text-white transition-colors"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full glass-pill text-xs font-mono text-cyan-300 hover:text-white transition-all"
               >
                 <span>View real-world projects on GitHub</span>
                 <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
