@@ -36,10 +36,16 @@ export default function Footer() {
               Email Directly
             </span>
             <a
-              href={`mailto:${portfolioData.email}`}
-              className="text-lg sm:text-2xl font-bold text-white hover:text-[#00F0FF] transition-colors"
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${portfolioData.email}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open Gmail to compose email"
+              className="text-lg sm:text-2xl font-bold text-white hover:text-[#00F0FF] transition-colors inline-flex items-center gap-2 group"
             >
-              {portfolioData.email}
+              <span>{portfolioData.email}</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 group-hover:bg-[#00F0FF] group-hover:text-black font-mono transition-colors">
+                Gmail ↗
+              </span>
             </a>
           </div>
 

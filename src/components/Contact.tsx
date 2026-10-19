@@ -1,13 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, ArrowUpRight } from "lucide-react";
+import { Mail, ArrowUpRight, Copy, Check } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { portfolioData } from "@/data/portfolio";
 
 export default function Contact() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(portfolioData.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${portfolioData.email}`;
+
   return (
     <section id="contact" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
       {/* Background ambient lighting */}
@@ -56,15 +66,38 @@ export default function Contact() {
 
         {/* Action Buttons: Pill-shaped frosted glass with glowing neon borders on hover */}
         <div className="flex flex-wrap items-center justify-center gap-3.5 sm:gap-4 w-full">
-          {/* Email Button: Direct mailto link to sabbirhasandv@gmail.com */}
+          {/* Primary Email Button: Direct Gmail Compose */}
           <a
-            href={`mailto:${portfolioData.email}`}
+            href={gmailComposeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Compose message in Gmail"
             className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#070D18] border border-cyan-400 text-white font-medium text-xs sm:text-sm shadow-[0_0_20px_rgba(0,240,255,0.35)] hover:bg-[#00F0FF] hover:text-black hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
             <Mail className="w-4 h-4 text-[#00F0FF] group-hover:text-black transition-colors" />
-            <span>Send Email</span>
+            <span>Send Email via Gmail</span>
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
+
+          {/* Quick Copy Email Button */}
+          <button
+            type="button"
+            onClick={handleCopyEmail}
+            title="Copy email address to clipboard"
+            className="group inline-flex items-center gap-2 px-4 py-3 rounded-full bg-white/5 border border-white/10 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,240,255,0.35)] text-slate-200 hover:text-white font-medium text-xs sm:text-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            {copied ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span className="text-emerald-400 font-semibold">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4 text-[#00F0FF]" />
+                <span>Copy Email</span>
+              </>
+            )}
+          </button>
 
           {/* LinkedIn Button */}
           <a

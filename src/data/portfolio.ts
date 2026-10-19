@@ -104,7 +104,7 @@ export const portfolioData: DeveloperProfile = {
     },
     {
       name: "Email",
-      url: "mailto:sabbirhasandv@gmail.com",
+      url: "https://mail.google.com/mail/?view=cm&fs=1&to=sabbirhasandv@gmail.com",
       icon: "mail",
       handle: "sabbirhasandv@gmail.com"
     }
@@ -135,7 +135,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["React", "Next.js", "Tailwind CSS", "REST API"],
       liveUrl: "https://bazar-dor-liard.vercel.app/",
       githubUrl: "https://github.com/sabbirdv/bazar-dor",
-      image: "/images/projects/mern.jpg",
+      image: "/images/projects/bazar-dor.png",
       accent: "#00F0FF",
       featured: true
     },
@@ -147,7 +147,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["React", "JavaScript", "Tailwind CSS", "Dashboard"],
       liveUrl: "https://ph-a6.vercel.app/",
       githubUrl: "https://github.com/sabbirdv/PH-A6",
-      image: "/images/projects/creative.jpg",
+      image: "/images/projects/fitlog.png",
       accent: "#10B981",
       featured: true
     },
@@ -159,7 +159,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["React", "TypeScript", "Tailwind CSS", "UI/UX"],
       liveUrl: "https://ph-a5-three.vercel.app/",
       githubUrl: "https://github.com/sabbirdv/PH-A5",
-      image: "/images/projects/mern.jpg",
+      image: "/images/projects/dev-stack.png",
       accent: "#A855F7",
       featured: true
     },
@@ -171,7 +171,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["React", "JavaScript", "Tailwind CSS", "E-Commerce"],
       liveUrl: "https://sabbir-ecobazar.vercel.app/",
       githubUrl: "https://github.com/sabbirdv/Ecobazar",
-      image: "/images/projects/ecobazar.jpg",
+      image: "/images/projects/echobazar.png",
       accent: "#10B981",
       featured: true
     },
@@ -183,7 +183,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
       liveUrl: "https://sabbirdv.github.io/E-commerce-Landing/",
       githubUrl: "https://github.com/sabbirdv/E-commerce-Landing",
-      image: "/images/projects/ecommerce.jpg",
+      image: "/images/projects/e-commerce.png",
       accent: "#F59E0B",
       featured: true
     },
@@ -195,7 +195,7 @@ export const portfolioData: DeveloperProfile = {
       tags: ["HTML5", "CSS3", "JavaScript", "Modern UI"],
       liveUrl: "https://sabbirdv.github.io/ph-a1/",
       githubUrl: "https://github.com/sabbirdv/ph-a1",
-      image: "/images/projects/creative.jpg",
+      image: "/images/projects/dev-conf.png",
       accent: "#00F0FF",
       featured: true
     }

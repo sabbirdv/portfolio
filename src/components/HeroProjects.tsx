@@ -393,8 +393,7 @@ function ProjectCardItem({
         className="w-full h-full transform-gpu will-change-transform overflow-visible origin-center rounded-2xl sm:rounded-3xl"
       >
         <div
-          onClick={() => window.open(project.liveUrl, "_blank", "noopener,noreferrer")}
-          className="group cursor-pointer relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden isolate bg-[#0A0F1D] border border-white/15 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
+          className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden isolate bg-[#0A0F1D] border border-white/15 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
         >
           {/* Specular Diagonal Glass Highlight */}
           <div className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.12] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
@@ -416,10 +415,19 @@ function ProjectCardItem({
             />
           </div>
 
+          {/* Stretched Link for the entire card (Live Demo) */}
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${project.title} live demo`}
+            className="absolute inset-0 z-10 cursor-pointer rounded-2xl sm:rounded-3xl"
+          />
+
           {/* TOP BAR: Category Frosted Glass Badge (fades in on scroll to project section) */}
           <motion.div
             style={{ opacity: detailsOpacity, y: detailsY }}
-            className="flex items-center justify-between z-10 w-full pointer-events-auto"
+            className="flex items-center justify-between z-20 w-full pointer-events-auto"
           >
             <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-medium text-slate-100 bg-[#05070A]/85 border border-white/15 backdrop-blur-md shadow-md">
               <span
@@ -433,30 +441,36 @@ function ProjectCardItem({
             </span>
 
             {/* Top-Right Quick Link Icons: GitHub & Live Demo */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 relative z-30">
               {project.githubUrl && (
-                <button
-                  type="button"
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   title="View GitHub Repository"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(project.githubUrl, "_blank", "noopener,noreferrer");
-                  }}
-                  className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/80 border border-white/15 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/15 hover:border-cyan-400 hover:shadow-[0_0_12px_rgba(0,240,255,0.4)] transition-all duration-300 shadow-md cursor-pointer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/15 hover:border-cyan-400 hover:shadow-[0_0_12px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
                 >
                   <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                </button>
+                </a>
               )}
-              <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/80 border border-white/15 flex items-center justify-center text-slate-300 group-hover:text-black group-hover:bg-[#00F0FF] group-hover:border-[#00F0FF] group-hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md">
-                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open Live Preview"
+                onClick={(e) => e.stopPropagation()}
+                className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
+              >
+                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
+              </a>
             </div>
           </motion.div>
 
           {/* BOTTOM BAR: Tech tags, Title, and Action Link Button (fades in on scroll) */}
           <motion.div
             style={{ opacity: detailsOpacity, y: detailsY }}
-            className="z-10 flex flex-col gap-2 sm:gap-3 w-full pointer-events-auto"
+            className="z-20 flex flex-col gap-2 sm:gap-3 w-full pointer-events-auto"
           >
             {/* Tech Tags */}
             <div className="flex flex-wrap gap-1 sm:gap-1.5">
@@ -472,19 +486,32 @@ function ProjectCardItem({
 
             <div className="flex items-end justify-between gap-3 sm:gap-4 mt-0.5">
               <div className="flex-1 min-w-0">
-                <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight group-hover:text-[#00F0FF] transition-colors drop-shadow-md truncate">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-30 block text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors drop-shadow-md truncate"
+                >
                   {project.title}
-                </h3>
+                </a>
                 <p className="text-[11px] sm:text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed">
                   {project.description}
                 </p>
               </div>
 
-              {/* Action Button */}
-              <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-[#00F0FF]/15 border border-cyan-400/40 text-[#00F0FF] group-hover:bg-[#00F0FF] group-hover:text-black group-hover:border-[#00F0FF] group-hover:shadow-[0_0_15px_rgba(0,240,255,0.7)] transition-all duration-300 whitespace-nowrap shrink-0 shadow-md">
+              {/* Action Button: Native Anchor Link */}
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open Live Preview"
+                onClick={(e) => e.stopPropagation()}
+                className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 shadow-lg cursor-pointer"
+              >
                 <span>Live Demo</span>
-                <ArrowUpRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
+                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
             </div>
           </motion.div>
         </div>
