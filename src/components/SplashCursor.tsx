@@ -281,6 +281,7 @@ void main() {
     float alpha = clamp(1.0 - low + grain, 0.0, 1.0);
     outColor = vec4(min(transmit - low, vec3(alpha)), alpha);
   } else {
+    c = c / (1.0 + c * 0.35);
     c = max(c + grain, 0.0);
     float alpha = clamp(max(c.r, max(c.g, c.b)), 0.0, 1.0);
     outColor = vec4(min(c, vec3(alpha)), alpha);
@@ -688,15 +689,29 @@ function SplashCursor({
     const inkFor = (color: RGB, amount: number) =>
       color.map(channel => (settingsRef.current.light ? 1 - channel : channel) * amount);
 
+    let isScrolling = false;
+    let scrollDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+    const markScrolling = () => {
+      isScrolling = true;
+      if (scrollDebounceTimer) clearTimeout(scrollDebounceTimer);
+      scrollDebounceTimer = setTimeout(() => {
+        isScrolling = false;
+      }, 180);
+    };
+
     const flush = (pointer: Pointer, dt: number, now: number) => {
       const s = settingsRef.current;
       const aspect = canvas.width / canvas.height;
       const length = Math.hypot((pointer.x - pointer.px) * aspect, pointer.y - pointer.py);
-      if (length > 0.35) {
+
+      // CRITICAL: If scrolling, or pointer jumped, or mouse is stationary (< 0.003),
+      // DO NOT inject ink! This completely eliminates the giant blinding glowing ball when scrolling!
+      if (isScrolling || length > 0.35 || length < 0.003) {
         pointer.px = pointer.x;
         pointer.py = pointer.y;
         return;
       }
+
       let dx = pointer.x - pointer.px;
       let dy = pointer.y - pointer.py;
       if (aspect < 1) dx *= aspect;
@@ -704,7 +719,8 @@ function SplashCursor({
       const radius = radiusFor(1);
       const spread = 1 + length / (1.77 * Math.sqrt(radius));
       const push = (6000 * s.force) / Math.sqrt(spread);
-      const amount = (0.15 * s.intensity * Math.min(dt * 60, 1)) / Math.sqrt(spread);
+      const speed = Math.min(length * 25, 1);
+      const amount = (0.12 * s.intensity * Math.min(dt * 60, 1) * speed) / Math.sqrt(spread);
       const color = inkFor(colorAt(pointer.offset, now), amount);
       splat(pointer.px, pointer.py, pointer.x, pointer.y, dx * push, dy * push, color, radius);
       pointer.px = pointer.x;
@@ -953,7 +969,7 @@ function SplashCursor({
     };
 
     const press = (clientX: number, clientY: number) => {
-      if (!settingsRef.current.clickSplash) return;
+      if (!settingsRef.current.clickSplash || isScrolling) return;
       const point = locate(clientX, clientY);
       if (!point) return;
       bursts.push(point);
@@ -961,10 +977,11 @@ function SplashCursor({
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== 'touch') track(`p${event.pointerId}`, event.clientX, event.clientY);
+      if (event.pointerType !== 'touch' && !isScrolling) track(`p${event.pointerId}`, event.clientX, event.clientY);
     };
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType !== 'touch') press(event.clientX, event.clientY);
+      // Left click only (button === 0); middle wheel click or right click will never trigger bursts
+      if (event.pointerType !== 'touch' && event.button === 0 && !isScrolling) press(event.clientX, event.clientY);
     };
     const onTouchStart = (event: TouchEvent) => {
       Array.from(event.changedTouches).forEach(touch => {
@@ -994,6 +1011,8 @@ function SplashCursor({
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('scroll', markScrolling, { passive: true });
+    window.addEventListener('wheel', markScrolling, { passive: true });
     window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('touchmove', onTouchMove, { passive: true });
     window.addEventListener('touchend', onTouchEnd, { passive: true });
@@ -1008,8 +1027,11 @@ function SplashCursor({
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      if (scrollDebounceTimer) clearTimeout(scrollDebounceTimer);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('scroll', markScrolling);
+      window.removeEventListener('wheel', markScrolling);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
