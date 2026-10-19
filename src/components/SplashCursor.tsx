@@ -281,7 +281,7 @@ void main() {
     float alpha = clamp(1.0 - low + grain, 0.0, 1.0);
     outColor = vec4(min(transmit - low, vec3(alpha)), alpha);
   } else {
-    c = c / (1.0 + c * 0.35);
+    c = c / (1.0 + c * 0.12);
     c = max(c + grain, 0.0);
     float alpha = clamp(max(c.r, max(c.g, c.b)), 0.0, 1.0);
     outColor = vec4(min(c, vec3(alpha)), alpha);
@@ -719,8 +719,8 @@ function SplashCursor({
       const radius = radiusFor(1);
       const spread = 1 + length / (1.77 * Math.sqrt(radius));
       const push = (6000 * s.force) / Math.sqrt(spread);
-      const speed = Math.min(length * 25, 1);
-      const amount = (0.12 * s.intensity * Math.min(dt * 60, 1) * speed) / Math.sqrt(spread);
+      const speed = Math.min(length * 30, 1);
+      const amount = (0.16 * s.intensity * Math.min(dt * 60, 1) * speed) / Math.sqrt(spread);
       const color = inkFor(colorAt(pointer.offset, now), amount);
       splat(pointer.px, pointer.py, pointer.x, pointer.y, dx * push, dy * push, color, radius);
       pointer.px = pointer.x;
