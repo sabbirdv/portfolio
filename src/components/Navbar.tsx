@@ -101,8 +101,8 @@ export default function Navbar() {
           <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#00F0FF] to-white p-[1px] shadow-[0_0_10px_rgba(0,240,255,0.4)] shrink-0">
             <div className="relative w-full h-full rounded-full overflow-hidden bg-[#05070A] flex items-center justify-center transition-transform group-hover:scale-105">
               <Image
-                src="/images/logo.webp"
-                alt="Sabbir Hasan Logo"
+                src={portfolioData.avatar}
+                alt={portfolioData.name}
                 width={28}
                 height={28}
                 className="w-full h-full object-cover"
