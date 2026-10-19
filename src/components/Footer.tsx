@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Mail, Zap } from "lucide-react";
+import { Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { portfolioData } from "@/data/portfolio";
 
@@ -12,11 +12,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full bg-[#030508] border-t border-white/10 pt-20 pb-10 overflow-hidden">
+    <footer className="relative w-full bg-[#030508] border-t border-white/10 pt-20 pb-0 overflow-hidden">
       {/* Background cyber grid and subtle ambient glow */}
       <div className="absolute inset-0 cyber-grid-bg opacity-30 pointer-events-none" />
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-cyan-500/10 blur-[100px] pointer-events-none" />
 
+      {/* Main Content Container (Constrained) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Massive headline */}
         <div className="mb-14">
@@ -95,37 +96,32 @@ export default function Footer() {
             <span>&copy; 2026 {portfolioData.name}. All rights reserved.</span>
           </div>
         </div>
+      </div>
 
-        {/* Watermark brand typography (Responsive SVG scales perfectly on mobile and never cuts off AN) */}
-        <div className="pt-6 pb-2 select-none overflow-hidden flex justify-center opacity-20 hover:opacity-30 transition-opacity">
-          <svg
-            viewBox="0 0 1000 130"
-            className="w-full h-auto max-w-5xl select-none"
-            aria-hidden="true"
+      {/* FULL-WIDTH MASSIVE BRAND TYPOGRAPHY (Edge-to-Edge across entire screen) */}
+      <div className="w-full overflow-hidden select-none pt-6 sm:pt-10 pb-0 leading-none">
+        <svg
+          viewBox="0 0 1600 215"
+          className="w-full h-auto block select-none pointer-events-none"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          <text
+            x="800"
+            y="180"
+            textAnchor="middle"
+            fill="#FFFFFF"
+            className="text-white fill-white select-none"
+            style={{
+              fontSize: "250px",
+              fontWeight: 900,
+              letterSpacing: "-0.04em",
+              fontFamily: "var(--font-sans), sans-serif"
+            }}
           >
-            <defs>
-              <linearGradient id="footerWatermarkGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-                <stop offset="65%" stopColor="#94A3B8" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#030508" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <text
-              x="500"
-              y="100"
-              textAnchor="middle"
-              fill="url(#footerWatermarkGradient)"
-              style={{
-                fontSize: "116px",
-                fontWeight: 900,
-                letterSpacing: "-0.04em",
-                fontFamily: "var(--font-sans), sans-serif"
-              }}
-            >
-              {portfolioData.name.toUpperCase()}
-            </text>
-          </svg>
-        </div>
+            Sabbir Hasan
+          </text>
+        </svg>
       </div>
     </footer>
   );

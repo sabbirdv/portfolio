@@ -8,12 +8,12 @@ export const metadata: Metadata = {
     "Portfolio of Sabbir Hasan, a Full Stack Web Developer & Creative Designer building modern, functional, and user-focused digital experiences with React, Next.js, and TypeScript.",
   icons: {
     icon: [
-      { url: "/images/sabbir.jpeg" },
+      { url: "/images/sabbir-circle.png" },
       { url: "/favicon.ico" }
     ],
-    shortcut: ["/images/sabbir.jpeg"],
+    shortcut: ["/favicon.ico"],
     apple: [
-      { url: "/images/sabbir.jpeg" }
+      { url: "/images/sabbir-circle.png" }
     ]
   },
   keywords: [
@@ -54,9 +54,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
-        <link rel="icon" type="image/jpeg" href="/images/sabbir.jpeg" />
-        <link rel="shortcut icon" href="/images/sabbir.jpeg" />
-        <link rel="apple-touch-icon" href="/images/sabbir.jpeg" />
+        <link rel="icon" type="image/png" href="/images/sabbir-circle.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/images/sabbir-circle.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
