@@ -1,26 +1,28 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
 import { portfolioData, Project } from "@/data/portfolio";
 
-// Looping Typewriter for Role Headline
+// ============================================================================
+// PERFORMANCE-OPTIMIZED TYPEWRITER (Single-timer, zero layout reflow)
+// ============================================================================
+const ROLES = [
+  "Full Stack Developer",
+  "Creative Designer",
+  "MERN Stack Specialist",
+  "JavaScript & TypeScript"
+] as const;
+
 function TypewriterRole() {
-  const roles = [
-    "Full Stack Developer",
-    "Creative Designer",
-    "MERN Stack Specialist",
-    "JavaScript & TypeScript"
-  ];
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const current = roles[roleIndex];
+    const current = ROLES[roleIndex];
     let timeout: NodeJS.Timeout;
 
     if (!isDeleting) {
@@ -40,7 +42,7 @@ function TypewriterRole() {
         }, 35);
       } else {
         setIsDeleting(false);
-        setRoleIndex((prev) => (prev + 1) % roles.length);
+        setRoleIndex((prev) => (prev + 1) % ROLES.length);
       }
     }
 
@@ -60,27 +62,32 @@ function TypewriterRole() {
   );
 }
 
-// Optimized 2D Deck Angles (clean hardware-accelerated rotateZ fanning matching Austin Serb)
-const initialDeckAngles = [
+// 2D Hardware-accelerated composite fanning deck angles
+const DECK_CONFIG = [
   { rotZ: -5, zIndex: 50 },
   { rotZ: 4, zIndex: 48 },
   { rotZ: -9, zIndex: 46 },
   { rotZ: 7, zIndex: 44 },
   { rotZ: -13, zIndex: 42 },
   { rotZ: 11, zIndex: 40 }
-];
+] as const;
 
 export default function HeroProjects() {
   const containerRef = useRef<HTMLDivElement>(null);
   const desktopStackTargetRef = useRef<HTMLDivElement>(null);
   const mobileStackTargetRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // References to direct DOM nodes to completely bypass React render cycles on scroll
+  const cardOuterRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const detailsTopRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const detailsBottomRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const heroTextRef = useRef<HTMLDivElement>(null);
 
   const [mounted, setMounted] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(true);
 
-  // Exact measured delta translations from grid slot to hero stack target
-  const [offsets, setOffsets] = useState<Array<{ x: number; y: number }>>([
+  // Pre-calculated or measured offsets (slot center to stack center)
+  const offsetsRef = useRef<Array<{ x: number; y: number }>>([
     { x: 300, y: -580 },
     { x: -300, y: -580 },
     { x: 300, y: -980 },
@@ -89,13 +96,22 @@ export default function HeroProjects() {
     { x: -300, y: -1380 }
   ]);
 
-  // Measure delta offsets once mounted and on resize
+  const isDesktopRef = useRef(true);
+  const isReducedMotionRef = useRef(false);
+
+  // ==========================================================================
+  // PRINCIPAL PERFORMANCE ENGINE: Decoupled rAF Composite Loop
+  // ==========================================================================
   useEffect(() => {
     setMounted(true);
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    isReducedMotionRef.current = prefersReducedMotion;
+
+    // Cache viewport & target measurements once (decoupled from scroll)
     const updateMeasurements = () => {
       const desktop = window.innerWidth >= 1024;
-      setIsDesktop(desktop);
+      isDesktopRef.current = desktop;
 
       const targetEl = desktop
         ? desktopStackTargetRef.current
@@ -103,60 +119,151 @@ export default function HeroProjects() {
 
       if (!targetEl) return;
       const targetRect = targetEl.getBoundingClientRect();
-      const targetCenter = {
-        x: targetRect.left + targetRect.width / 2,
-        y: targetRect.top + targetRect.height / 2
-      };
+      const targetCenterX = targetRect.left + targetRect.width / 2;
+      const targetCenterY = targetRect.top + targetRect.height / 2;
 
-      const newOffsets = cardRefs.current.map((cardEl) => {
+      offsetsRef.current = cardOuterRefs.current.map((cardEl) => {
         if (!cardEl) return { x: 0, y: 0 };
         const cardRect = cardEl.getBoundingClientRect();
-        const cardCenter = {
-          x: cardRect.left + cardRect.width / 2,
-          y: cardRect.top + cardRect.height / 2
-        };
-
         return {
-          x: targetCenter.x - cardCenter.x,
-          y: targetCenter.y - cardCenter.y
+          x: targetCenterX - (cardRect.left + cardRect.width / 2),
+          y: targetCenterY - (cardRect.top + cardRect.height / 2)
         };
       });
-
-      setOffsets(newOffsets);
     };
 
-    const timer1 = setTimeout(updateMeasurements, 80);
-    const timer2 = setTimeout(updateMeasurements, 300);
+    updateMeasurements();
 
-    window.addEventListener("resize", updateMeasurements, { passive: true });
-    window.addEventListener("orientationchange", updateMeasurements, { passive: true });
+    let rafId = 0;
+    let isTicking = false;
+    let currentProgress = -1; // Force initial render
+    let lastScrollY = window.scrollY;
+
+    const TRANSITION_HEIGHT = 440; // Pixel threshold where cards land in grid
+    const LERP_FACTOR = 0.22; // Desktop momentum; mobile uses 1.0 (zero lag)
+
+    // Render loop executing purely on the browser compositor via rAF
+    const render = () => {
+      const isDesktop = isDesktopRef.current;
+      const isReduced = isReducedMotionRef.current;
+
+      // Calculate target progress clamped [0, 1]
+      const targetProgress = isReduced
+        ? 1
+        : Math.min(1, Math.max(0, lastScrollY / TRANSITION_HEIGHT));
+
+      // On mobile, lock 1:1 to touch scroll (LERP = 1.0) for zero input latency
+      const lerp = isDesktop && !isReduced ? LERP_FACTOR : 1.0;
+      currentProgress += (targetProgress - currentProgress) * lerp;
+
+      // Snap when close enough to sleep rAF loop and eliminate idle battery drain
+      if (Math.abs(targetProgress - currentProgress) < 0.001) {
+        currentProgress = targetProgress;
+        isTicking = false;
+      }
+
+      const p = currentProgress;
+      const remaining = 1 - p;
+      const initialScale = isDesktop ? 0.82 : 0.42;
+      const scale = initialScale + (1 - initialScale) * p;
+
+      // 1. Update Hero Text Opacity & Translation (Composite only)
+      if (heroTextRef.current) {
+        const heroP = Math.min(1, p / 0.45);
+        const heroOpacity = 1 - heroP * 0.75;
+        const heroTranslateY = -heroP * 30;
+        heroTextRef.current.style.opacity = heroOpacity.toFixed(3);
+        heroTextRef.current.style.transform = `translate3d(0, ${heroTranslateY.toFixed(1)}px, 0)`;
+      }
+
+      // 2. Details (Title, Tags, Buttons) Fade-in Curve: 0% in Hero, fades in from p=0.45 to 0.85
+      const detailsP = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
+      const detailsOpacity = detailsP.toFixed(3);
+      const detailsTranslateY = ((1 - detailsP) * 14).toFixed(1);
+
+      // 3. Batch apply hardware-accelerated transforms to all cards
+      const offsets = offsetsRef.current;
+      const cardsCount = cardInnerRefs.current.length;
+
+      for (let i = 0; i < cardsCount; i++) {
+        const innerEl = cardInnerRefs.current[i];
+        const outerEl = cardOuterRefs.current[i];
+        if (!innerEl || !outerEl) continue;
+
+        const config = DECK_CONFIG[i] || { rotZ: 0, zIndex: 10 };
+
+        if (p >= 0.999) {
+          // Idle in grid: clear transforms & will-change to free GPU VRAM
+          innerEl.style.transform = "";
+          innerEl.style.willChange = "auto";
+          outerEl.style.zIndex = "10";
+        } else {
+          // Active transition state: engage will-change
+          innerEl.style.willChange = "transform";
+          outerEl.style.zIndex = String(config.zIndex);
+
+          const offset = offsets[i] || { x: 0, y: 0 };
+          const x = (offset.x * remaining).toFixed(1);
+          const y = (offset.y * remaining).toFixed(1);
+          const rotZ = (config.rotZ * remaining).toFixed(2);
+          const s = scale.toFixed(3);
+
+          innerEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s}) rotate(${rotZ}deg)`;
+        }
+
+        // Update details visibility without triggering layout reflow
+        const topEl = detailsTopRefs.current[i];
+        const bottomEl = detailsBottomRefs.current[i];
+
+        if (topEl) {
+          topEl.style.opacity = detailsOpacity;
+          topEl.style.transform = `translate3d(0, ${detailsTranslateY}px, 0)`;
+        }
+        if (bottomEl) {
+          bottomEl.style.opacity = detailsOpacity;
+          bottomEl.style.transform = `translate3d(0, ${detailsTranslateY}px, 0)`;
+        }
+      }
+
+      // Continue rAF loop only while transitioning; automatically sleep when idle
+      if (isTicking) {
+        rafId = requestAnimationFrame(render);
+      }
+    };
+
+    // Passive scroll listener: purely updates scroll coordinate without executing work
+    const onScroll = () => {
+      lastScrollY = window.scrollY;
+
+      // Only run when within transition range or settling
+      if (!isTicking) {
+        if (lastScrollY <= TRANSITION_HEIGHT + 100 || currentProgress < 0.999) {
+          isTicking = true;
+          rafId = requestAnimationFrame(render);
+        }
+      }
+    };
+
+    const onResize = () => {
+      updateMeasurements();
+      onScroll();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("orientationchange", onResize, { passive: true });
+
+    // Initial render tick to position deck at scroll 0
+    isTicking = true;
+    rafId = requestAnimationFrame(render);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      window.removeEventListener("resize", updateMeasurements);
-      window.removeEventListener("orientationchange", updateMeasurements);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
     };
   }, []);
-
-  // Track scroll progress across Hero and transition into Projects Grid
-  const { scrollY } = useScroll();
-
-  // Scroll interpolation: 0 (Hero top) to 460px (entering Projects Grid)
-  const rawProgress = useTransform(scrollY, [0, 460], [0, 1]);
-
-  // High-performance spring: desktop gets silky momentum; mobile uses direct rawProgress (1:1 zero lag)
-  const smoothProgress = useSpring(rawProgress, {
-    stiffness: 350,
-    damping: 38,
-    mass: 0.15
-  });
-
-  const activeProgress = isDesktop ? smoothProgress : rawProgress;
-
-  // Hero text subtle fade on scroll
-  const heroOpacity = useTransform(activeProgress, [0, 0.45], [1, 0.25]);
-  const heroY = useTransform(activeProgress, [0, 0.45], [0, -30]);
 
   const projects = portfolioData.projects;
 
@@ -176,17 +283,13 @@ export default function HeroProjects() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
             {/* HERO LEFT COLUMN */}
-            <motion.div
-              style={{ opacity: heroOpacity, y: heroY }}
-              className="lg:col-span-7 flex flex-col items-start gap-5 sm:gap-6 z-10 w-full"
+            <div
+              ref={heroTextRef}
+              className="lg:col-span-7 flex flex-col items-start gap-5 sm:gap-6 z-10 w-full transform-gpu"
+              style={{ willChange: "transform, opacity", backfaceVisibility: "hidden" }}
             >
               {/* Glowing Emerald Available for Hire Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="inline-flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#071311]/80 border border-emerald-500/40 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.2)]"
-              >
+              <div className="inline-flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#071311]/80 border border-emerald-500/40 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
@@ -194,21 +297,16 @@ export default function HeroProjects() {
                 <span className="text-xs font-semibold text-emerald-300 tracking-wide font-mono">
                   Available for Hire / Bangladesh
                 </span>
-              </motion.div>
+              </div>
 
               {/* Bold Headline + Mobile Deck Anchor Slot */}
               <div className="flex items-center justify-between gap-3 sm:gap-4 w-full">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="flex-1 min-w-0 space-y-1 sm:space-y-1.5"
-                >
+                <div className="flex-1 min-w-0 space-y-1 sm:space-y-1.5">
                   <span className="block text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
                     Sabbir Hasan
                   </span>
                   <TypewriterRole />
-                </motion.div>
+                </div>
 
                 {/* Right (Mobile Only): 3D Card Deck Anchor Slot matching Austin Serb mobile screenshot */}
                 <div
@@ -219,24 +317,15 @@ export default function HeroProjects() {
               </div>
 
               {/* Crisp, Highly Legible Bio */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-sm sm:text-base md:text-lg text-slate-200 max-w-xl leading-relaxed font-normal"
-              >
+              <p className="text-sm sm:text-base md:text-lg text-slate-200 max-w-xl leading-relaxed font-normal">
                 <strong className="text-white font-semibold">
                   I design and build modern, functional, and user-focused digital experiences.
                 </strong>{" "}
                 Full Stack Web Developer &amp; Creative Designer focused on building modern web applications and meaningful digital experiences.
-              </motion.p>
+              </p>
 
               {/* "See My Github" Button with Avatar & Neon Glow */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
+              <div>
                 <a
                   href={portfolioData.socials.find((s) => s.name === "GitHub")?.url || "https://github.com/sabbirdv"}
                   target="_blank"
@@ -251,6 +340,7 @@ export default function HeroProjects() {
                       height={32}
                       className="w-full h-full object-cover"
                       priority
+                      decoding="async"
                     />
                   </div>
                   <span className="tracking-tight text-white font-medium group-hover:text-[#00F0FF] transition-colors">
@@ -260,8 +350,8 @@ export default function HeroProjects() {
                     <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
                 </a>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
             {/* HERO RIGHT COLUMN (Desktop Only: Stack Landing Anchor) */}
             <div
@@ -297,18 +387,161 @@ export default function HeroProjects() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 relative z-40">
           {projects.map((project, index) => {
             return (
-              <ProjectCardItem
+              <div
                 key={project.id}
-                project={project}
-                index={index}
-                activeProgress={activeProgress}
-                offset={offsets[index] || { x: 0, y: 0 }}
-                isDesktop={isDesktop}
-                mounted={mounted}
-                cardRef={(el) => {
-                  cardRefs.current[index] = el;
+                ref={(el) => {
+                  cardOuterRefs.current[index] = el;
                 }}
-              />
+                style={{
+                  zIndex: mounted ? DECK_CONFIG[index]?.zIndex || 10 : 10
+                }}
+                className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
+              >
+                {/* Hardware-accelerated GPU Composite Layer */}
+                <div
+                  ref={(el) => {
+                    cardInnerRefs.current[index] = el;
+                  }}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    transform: "translate3d(0, 0, 0)"
+                  }}
+                  className="w-full h-full transform-gpu overflow-visible origin-center rounded-2xl sm:rounded-3xl"
+                >
+                  <div className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#070D18] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none">
+                    {/* Layer 0: Full-bleed Project Image (100% bright, visible, hardware-decoded) */}
+                    <div className="absolute inset-0 z-0 rounded-2xl sm:rounded-3xl overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover object-center rounded-2xl sm:rounded-3xl transition-transform duration-300 ease-out group-hover:scale-103"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                        priority={index < 2}
+                        loading={index < 2 ? "eager" : "lazy"}
+                        decoding="async"
+                      />
+                      {/* Subtle bottom shadow overlay ONLY behind text for pristine legibility */}
+                      <div className="absolute inset-x-0 bottom-0 h-40 rounded-b-2xl sm:rounded-b-3xl bg-gradient-to-t from-[#05070A]/95 via-[#05070A]/50 to-transparent pointer-events-none z-[1]" />
+                    </div>
+
+                    {/* Layer 1: Specular Diagonal Glass Highlight */}
+                    <div className="pointer-events-none absolute inset-0 z-[1] rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Layer 2: Stretched Link for the entire card (Live Demo) */}
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open ${project.title} live demo`}
+                      className="absolute inset-0 z-10 cursor-pointer rounded-2xl sm:rounded-3xl"
+                    />
+
+                    {/* Layer 3: TOP BAR (Category Badge & Quick Links - driven by decoupled rAF) */}
+                    <div
+                      ref={(el) => {
+                        detailsTopRefs.current[index] = el;
+                      }}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translate3d(0, 0, 0)"
+                      }}
+                      className="flex items-center justify-between z-20 w-full pointer-events-auto transform-gpu"
+                    >
+                      <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-medium text-slate-100 bg-[#05070A]/90 border border-white/20 shadow-md">
+                        <span
+                          className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shadow-[0_0_8px]"
+                          style={{
+                            backgroundColor: project.accent,
+                            color: project.accent
+                          }}
+                        />
+                        {project.category}
+                      </span>
+
+                      {/* Top-Right Quick Link Icons */}
+                      <div className="flex items-center gap-1.5 sm:gap-2 relative z-30">
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="View GitHub Repository"
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/15 hover:border-cyan-400 hover:shadow-[0_0_12px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
+                          >
+                            <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                          </a>
+                        )}
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open Live Preview"
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
+                        >
+                          <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Layer 3: BOTTOM BAR (Tech tags, Title, and Action Link Button) */}
+                    <div
+                      ref={(el) => {
+                        detailsBottomRefs.current[index] = el;
+                      }}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        transform: "translate3d(0, 0, 0)"
+                      }}
+                      className="z-20 flex flex-col gap-2 sm:gap-3 w-full pointer-events-auto transform-gpu"
+                    >
+                      {/* Tech Tags */}
+                      <div className="flex flex-wrap gap-1 sm:gap-1.5">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono bg-[#05070A]/90 border border-white/15 text-slate-200 shadow-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-end justify-between gap-3 sm:gap-4 mt-0.5">
+                        <div className="flex-1 min-w-0">
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative z-30 block text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors drop-shadow-md truncate"
+                          >
+                            {project.title}
+                          </a>
+                          <p className="text-[11px] sm:text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed">
+                            {project.description}
+                          </p>
+                        </div>
+
+                        {/* Action Button: Native Anchor Link */}
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open Live Preview"
+                          onClick={(e) => e.stopPropagation()}
+                          className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 shadow-lg cursor-pointer"
+                        >
+                          <span>Live Demo</span>
+                          <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -327,193 +560,5 @@ export default function HeroProjects() {
         </div>
       </section>
     </div>
-  );
-}
-
-// ====================================================================
-// INDIVIDUAL FLOATING PROJECT CARD COMPONENT
-// Super lightweight: 2D GPU-accelerated rotation & translation
-// Bright, crystal-clear images (no dark overlay on image body!)
-// ====================================================================
-interface ProjectCardItemProps {
-  project: Project;
-  index: number;
-  activeProgress: MotionValue<number>;
-  offset: { x: number; y: number };
-  isDesktop: boolean;
-  mounted: boolean;
-  cardRef: (el: HTMLDivElement | null) => void;
-}
-
-function ProjectCardItem({
-  project,
-  index,
-  activeProgress,
-  offset,
-  isDesktop,
-  mounted,
-  cardRef
-}: ProjectCardItemProps) {
-  const config = initialDeckAngles[index] || { rotZ: 0, zIndex: 10 };
-
-  // Smooth scroll transitions: move from hero deck to grid slot
-  const cardX = useTransform(activeProgress, [0, 1], [offset.x, 0]);
-  const cardY = useTransform(activeProgress, [0, 1], [offset.y, 0]);
-  const cardRotZ = useTransform(activeProgress, [0, 1], [config.rotZ, 0]);
-
-  // Initial scale: mobile starts at 0.42 to fit compact anchor; desktop starts at 0.82
-  const initialScale = isDesktop ? 0.82 : 0.42;
-  const cardScale = useTransform(activeProgress, [0, 1], [initialScale, 1]);
-
-  // Z-index: top card stays on top when stacked in Hero
-  const cardZIndex = useTransform(activeProgress, [0, 0.95, 1], [config.zIndex, config.zIndex, 10]);
-
-  // Details Visibility: smoothly fade in as cards approach the project grid
-  const detailsOpacity = useTransform(activeProgress, [0.55, 0.9], [0, 1]);
-  const detailsY = useTransform(activeProgress, [0.55, 0.9], [14, 0]);
-
-  return (
-    <motion.div
-      ref={cardRef}
-      style={{
-        zIndex: mounted ? cardZIndex : config.zIndex
-      }}
-      className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
-    >
-      <motion.div
-        style={{
-          x: mounted ? cardX : 0,
-          y: mounted ? cardY : 0,
-          rotate: mounted ? cardRotZ : 0,
-          scale: mounted ? cardScale : 1,
-          zIndex: mounted ? cardZIndex : 10
-        }}
-        className="w-full h-full transform-gpu will-change-transform overflow-visible origin-center rounded-2xl sm:rounded-3xl"
-      >
-        <div
-          className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#070D18] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
-        >
-          {/* Full-bleed Project Image - z-0 sits above background so it is 100% bright and visible */}
-          <div className="absolute inset-0 z-0 rounded-2xl sm:rounded-3xl overflow-hidden">
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              className="object-cover object-center rounded-2xl sm:rounded-3xl transition-transform duration-300 ease-out group-hover:scale-103"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-              priority={index < 2}
-            />
-            {/* Subtle bottom shadow overlay ONLY behind text for pristine legibility - top 70% is crystal clear! */}
-            <motion.div
-              style={{ opacity: detailsOpacity }}
-              className="absolute inset-x-0 bottom-0 h-40 rounded-b-2xl sm:rounded-b-3xl bg-gradient-to-t from-[#05070A]/95 via-[#05070A]/50 to-transparent pointer-events-none z-[1]"
-            />
-          </div>
-
-          {/* Specular Diagonal Glass Highlight */}
-          <div className="pointer-events-none absolute inset-0 z-[1] rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* Stretched Link for the entire card (Live Demo) */}
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open ${project.title} live demo`}
-            className="absolute inset-0 z-10 cursor-pointer rounded-2xl sm:rounded-3xl"
-          />
-
-          {/* TOP BAR: Category Badge & Quick Links (fades in as card enters grid) */}
-          <motion.div
-            style={{ opacity: detailsOpacity, y: detailsY }}
-            className="flex items-center justify-between z-20 w-full pointer-events-auto"
-          >
-            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-medium text-slate-100 bg-[#05070A]/90 border border-white/20 shadow-md">
-              <span
-                className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shadow-[0_0_8px]"
-                style={{
-                  backgroundColor: project.accent,
-                  color: project.accent
-                }}
-              />
-              {project.category}
-            </span>
-
-            {/* Top-Right Quick Link Icons: GitHub & Live Demo */}
-            <div className="flex items-center gap-1.5 sm:gap-2 relative z-30">
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View GitHub Repository"
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/15 hover:border-cyan-400 hover:shadow-[0_0_12px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
-                >
-                  <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                </a>
-              )}
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Open Live Preview"
-                onClick={(e) => e.stopPropagation()}
-                className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-white/20 flex items-center justify-center text-slate-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
-              >
-                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
-              </a>
-            </div>
-          </motion.div>
-
-          {/* BOTTOM BAR: Tech tags, Title, and Action Link Button (fades in as card enters grid) */}
-          <motion.div
-            style={{ opacity: detailsOpacity, y: detailsY }}
-            className="z-20 flex flex-col gap-2 sm:gap-3 w-full pointer-events-auto"
-          >
-            {/* Tech Tags */}
-            <div className="flex flex-wrap gap-1 sm:gap-1.5">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono bg-[#05070A]/90 border border-white/15 text-slate-200 shadow-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex items-end justify-between gap-3 sm:gap-4 mt-0.5">
-              <div className="flex-1 min-w-0">
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="relative z-30 block text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors drop-shadow-md truncate"
-                >
-                  {project.title}
-                </a>
-                <p className="text-[11px] sm:text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed">
-                  {project.description}
-                </p>
-              </div>
-
-              {/* Action Button: Native Anchor Link */}
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Open Live Preview"
-                onClick={(e) => e.stopPropagation()}
-                className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 shadow-lg cursor-pointer"
-              >
-                <span>Live Demo</span>
-                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 }
