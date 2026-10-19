@@ -81,12 +81,12 @@ export default function Navbar() {
       <motion.nav
         layout
         transition={{
-          type: "spring",
-          stiffness: 400,
-          damping: 34,
-          mass: 0.6
+          layout: {
+            duration: 0.35,
+            ease: [0.16, 1, 0.3, 1]
+          }
         }}
-        className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-md border transition-all duration-300 max-w-[calc(100vw-1.5rem)] ${
+        className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-md border transition-colors duration-300 max-w-[calc(100vw-1.5rem)] ${
           isScrolled
             ? "bg-[#070B14]/85 border-cyan-500/40 shadow-[0_8px_32px_rgba(0,240,255,0.22),_inset_0_1px_1px_rgba(255,255,255,0.2)]"
             : "bg-[#070B14]/75 border-white/18 shadow-[0_8px_32px_rgba(0,0,0,0.4),_inset_0_1px_1px_rgba(255,255,255,0.15)]"
@@ -124,10 +124,10 @@ export default function Navbar() {
             {isFullDesktopNav ? (
               <motion.div
                 key="desktop-full-content"
-                initial={{ opacity: 0, scale: 0.94 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.18 }}
+                initial={{ opacity: 0, filter: "blur(3px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(3px)" }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                 className="flex items-center gap-2"
               >
                 {/* Horizontal Navigation Links */}
@@ -169,10 +169,10 @@ export default function Navbar() {
             ) : (
               <motion.div
                 key="desktop-mini-toggle"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.15 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
                 className="flex items-center pl-1"
               >
                 <button
