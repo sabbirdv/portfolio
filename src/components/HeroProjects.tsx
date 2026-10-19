@@ -197,11 +197,11 @@ export default function HeroProjects() {
           // Idle in grid: clear transforms & will-change to free GPU VRAM
           innerEl.style.transform = "";
           innerEl.style.willChange = "auto";
-          outerEl.style.zIndex = "10";
+          outerEl.style.zIndex = "20";
         } else {
-          // Active transition state: engage will-change
+          // Active transition state: engage will-change (70..60, always in front of header)
           innerEl.style.willChange = "transform";
-          outerEl.style.zIndex = String(config.zIndex);
+          outerEl.style.zIndex = String(config.zIndex + 20);
 
           const offset = offsets[i] || { x: 0, y: 0 };
           const x = (offset.x * remaining).toFixed(1);
@@ -372,12 +372,12 @@ export default function HeroProjects() {
       {/* ======================================================== */}
       <section id="projects" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-28">
         {/* Section Header */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-8 sm:mb-10 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-[#00F0FF] text-xs font-mono uppercase tracking-wider mb-3">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>Engineered Works</span>
           </div>
-          <div className="pointer-events-none relative z-50 select-none">
+          <div className="pointer-events-none select-none">
             <h2 className="inline-block text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
               Latest Projects
             </h2>
@@ -385,7 +385,7 @@ export default function HeroProjects() {
         </div>
 
         {/* Responsive Grid: 1-Column on Mobile, 2-Column on Tablet & Desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 relative z-40">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 relative z-30">
           {projects.map((project, index) => {
             return (
               <div
@@ -394,7 +394,7 @@ export default function HeroProjects() {
                   cardOuterRefs.current[index] = el;
                 }}
                 style={{
-                  zIndex: mounted ? DECK_CONFIG[index]?.zIndex || 10 : 10
+                  zIndex: mounted ? (DECK_CONFIG[index]?.zIndex || 10) + 20 : 20
                 }}
                 className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
               >
