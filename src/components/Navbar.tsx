@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { MoreHorizontal, X, Zap, ArrowUpRight, Menu, Mail } from "lucide-react";
+import { MoreHorizontal, X, ArrowUpRight, Menu, Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { portfolioData } from "@/data/portfolio";
 
@@ -97,9 +98,16 @@ export default function Navbar() {
           onClick={(e) => handleNavClick(e, "#hero")}
           className="flex items-center gap-2 group shrink-0"
         >
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#00F0FF] to-white p-[1px] shadow-[0_0_10px_rgba(0,240,255,0.4)]">
-            <div className="w-full h-full rounded-full bg-[#05070A] flex items-center justify-center transition-transform group-hover:scale-105">
-              <Zap className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#00F0FF] fill-[#00F0FF]/30" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#00F0FF] to-white p-[1px] shadow-[0_0_10px_rgba(0,240,255,0.4)] shrink-0">
+            <div className="relative w-full h-full rounded-full overflow-hidden bg-[#05070A] flex items-center justify-center transition-transform group-hover:scale-105">
+              <Image
+                src="/images/logo.webp"
+                alt="Sabbir Hasan Logo"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
           </div>
           <span className="font-bold text-xs sm:text-sm tracking-tight text-white group-hover:text-[#00F0FF] transition-colors whitespace-nowrap">
