@@ -1,21 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, ArrowUpRight, Copy, Check } from "lucide-react";
+import { Mail, ArrowUpRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { portfolioData } from "@/data/portfolio";
 
 export default function Contact() {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(portfolioData.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
   const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${portfolioData.email}`;
 
   return (
@@ -78,26 +70,6 @@ export default function Contact() {
             <span>Send Email via Gmail</span>
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
-
-          {/* Quick Copy Email Button */}
-          <button
-            type="button"
-            onClick={handleCopyEmail}
-            title="Copy email address to clipboard"
-            className="group inline-flex items-center gap-2 px-4 py-3 rounded-full bg-white/5 border border-white/10 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(0,240,255,0.35)] text-slate-200 hover:text-white font-medium text-xs sm:text-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-400 font-semibold">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4 text-[#00F0FF]" />
-                <span>Copy Email</span>
-              </>
-            )}
-          </button>
 
           {/* LinkedIn Button */}
           <a
