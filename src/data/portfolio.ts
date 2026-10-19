@@ -34,6 +34,7 @@ export interface DeveloperProfile {
   location: string;
   portfolioUrl: string;
   avatar: string;
+  githubAvatar?: string;
   typingLines: string[];
   bioParagraphs: string[];
   highlights: string[];
@@ -57,6 +58,7 @@ export const portfolioData: DeveloperProfile = {
   location: "Bangladesh",
   portfolioUrl: "https://sabbirdvs.com",
   avatar: "/images/sabbir.webp",
+  githubAvatar: "/images/github-avatar.webp",
   typingLines: [
     "Full Stack Web Developer",
     "Creative Designer",

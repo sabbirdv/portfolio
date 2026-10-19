@@ -335,7 +335,7 @@ export default function HeroProjects() {
                 >
                   <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.5)]">
                     <Image
-                      src={portfolioData.avatar}
+                      src={portfolioData.githubAvatar || portfolioData.avatar}
                       alt={portfolioData.name}
                       width={32}
                       height={32}
