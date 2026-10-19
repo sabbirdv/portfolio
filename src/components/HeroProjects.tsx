@@ -62,12 +62,12 @@ function TypewriterRole() {
 
 // Project Initial 3D Deck Angles (Fan angle deck matching Austin Serb)
 const initialDeckAngles = [
-  { rotZ: 0, rotX: 3, rotY: -2, zIndex: 46 },
-  { rotZ: -5, rotX: 4, rotY: 2, zIndex: 45 },
-  { rotZ: 6, rotX: 2, rotY: -3, zIndex: 44 },
-  { rotZ: -9, rotX: 3, rotY: 3, zIndex: 43 },
-  { rotZ: 10, rotX: 2, rotY: -2, zIndex: 42 },
-  { rotZ: -14, rotX: 4, rotY: 2, zIndex: 41 }
+  { rotZ: -5, rotX: 3, rotY: -2, zIndex: 50 },
+  { rotZ: 3, rotX: 2, rotY: 2, zIndex: 48 },
+  { rotZ: -10, rotX: 4, rotY: -3, zIndex: 46 },
+  { rotZ: 7, rotX: 2, rotY: 3, zIndex: 44 },
+  { rotZ: -14, rotX: 3, rotY: -2, zIndex: 42 },
+  { rotZ: 12, rotX: 4, rotY: 2, zIndex: 40 }
 ];
 
 export default function HeroProjects() {
@@ -375,8 +375,11 @@ function ProjectCardItem({
   const detailsY = useTransform(smoothProgress, [0.6, 0.92], [16, 0]);
 
   return (
-    <div
+    <motion.div
       ref={cardRef}
+      style={{
+        zIndex: mounted ? cardZIndex : config.zIndex
+      }}
       className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
     >
       <motion.div
@@ -516,6 +519,6 @@ function ProjectCardItem({
           </motion.div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

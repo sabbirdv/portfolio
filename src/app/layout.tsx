@@ -3,9 +3,19 @@ import "./globals.css";
 import SplashCursor from "@/components/SplashCursor";
 
 export const metadata: Metadata = {
-  title: "Sabbir Hasan (sabbirdv) | Full Stack Web Developer & Creative Designer",
+  title: "Sabbir Hasan",
   description:
     "Portfolio of Sabbir Hasan, a Full Stack Web Developer & Creative Designer building modern, functional, and user-focused digital experiences with React, Next.js, and TypeScript.",
+  icons: {
+    icon: [
+      { url: "/images/sabbir.jpeg" },
+      { url: "/favicon.ico" }
+    ],
+    shortcut: ["/images/sabbir.jpeg"],
+    apple: [
+      { url: "/images/sabbir.jpeg" }
+    ]
+  },
   keywords: [
     "Sabbir Hasan",
     "sabbirdv",
@@ -23,14 +33,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://github.com/sabbirdv",
-    title: "Sabbir Hasan | Full Stack Web Developer & Creative Designer",
+    title: "Sabbir Hasan",
     description:
       "I design and build modern, functional, and user-focused digital experiences.",
     siteName: "Sabbir Hasan Portfolio"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sabbir Hasan | Full Stack Web Developer & Creative Designer",
+    title: "Sabbir Hasan",
     description:
       "I design and build modern, functional, and user-focused digital experiences."
   }
@@ -44,6 +54,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
+        <link rel="icon" type="image/jpeg" href="/images/sabbir.jpeg" />
+        <link rel="shortcut icon" href="/images/sabbir.jpeg" />
+        <link rel="apple-touch-icon" href="/images/sabbir.jpeg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

@@ -128,6 +128,18 @@ export const portfolioData: DeveloperProfile = {
   ],
   projects: [
     {
+      id: "echo-bazar",
+      title: "Echo Bazar",
+      category: "Organic Grocery Store",
+      description: "Organic grocery e-commerce experience featuring product category filtering and seamless shopping cart flow.",
+      tags: ["React", "JavaScript", "Tailwind CSS", "E-Commerce"],
+      liveUrl: "https://sabbir-ecobazar.vercel.app/",
+      githubUrl: "https://github.com/sabbirdv/Ecobazar",
+      image: "/images/projects/echobazar.png",
+      accent: "#10B981",
+      featured: true
+    },
+    {
       id: "bazardor",
       title: "Bazardor",
       category: "Full Stack Web App",
@@ -161,18 +173,6 @@ export const portfolioData: DeveloperProfile = {
       githubUrl: "https://github.com/sabbirdv/PH-A5",
       image: "/images/projects/dev-stack.png",
       accent: "#A855F7",
-      featured: true
-    },
-    {
-      id: "echo-bazar",
-      title: "Echo Bazar",
-      category: "Organic Grocery Store",
-      description: "Organic grocery e-commerce experience featuring product category filtering and seamless shopping cart flow.",
-      tags: ["React", "JavaScript", "Tailwind CSS", "E-Commerce"],
-      liveUrl: "https://sabbir-ecobazar.vercel.app/",
-      githubUrl: "https://github.com/sabbirdv/Ecobazar",
-      image: "/images/projects/echobazar.png",
-      accent: "#10B981",
       featured: true
     },
     {
