@@ -45,23 +45,13 @@
 }
 
 /* ========================================================
-   VIBRANT AMBIENT MESH & CYBER BACKGROUND
+   SUBTLE HIGH-TECH CYBER GRID BACKGROUND
    ======================================================== */
 .cyber-grid-bg {
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
-}
-
-.ambient-mesh-bg {
-  background-color: #05070a;
-  background-image: 
-    radial-gradient(at 15% 15%, rgba(0, 240, 255, 0.09) 0px, transparent 45%),
-    radial-gradient(at 85% 20%, rgba(168, 85, 247, 0.08) 0px, transparent 45%),
-    radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
-    radial-gradient(at 20% 80%, rgba(0, 240, 255, 0.07) 0px, transparent 45%),
-    radial-gradient(at 80% 85%, rgba(168, 85, 247, 0.08) 0px, transparent 45%);
 }
 
 /* Ambient Radial Glow Spotlights (Optimized GPU blur) */
