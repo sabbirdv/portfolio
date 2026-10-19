@@ -98,28 +98,34 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* FULL-WIDTH MASSIVE BRAND TYPOGRAPHY (Edge-to-Edge across entire screen) */}
-      <div className="w-full overflow-hidden select-none pt-6 sm:pt-10 pb-0 leading-none">
+      {/* FULL-WIDTH MASSIVE BRAND WATERMARK TYPOGRAPHY (Edge-to-Edge with original gradient & overlay) */}
+      <div className="w-full select-none overflow-hidden flex justify-center opacity-25 hover:opacity-40 transition-opacity duration-500 pt-6 sm:pt-10 pb-0 leading-none">
         <svg
           viewBox="0 0 1600 215"
           className="w-full h-auto block select-none pointer-events-none"
           preserveAspectRatio="xMidYMid meet"
           aria-hidden="true"
         >
+          <defs>
+            <linearGradient id="footerWatermarkGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
+              <stop offset="65%" stopColor="#94A3B8" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#030508" stopOpacity="0" />
+            </linearGradient>
+          </defs>
           <text
             x="800"
-            y="180"
+            y="175"
             textAnchor="middle"
-            fill="#FFFFFF"
-            className="text-white fill-white select-none"
+            fill="url(#footerWatermarkGradient)"
             style={{
-              fontSize: "250px",
+              fontSize: "205px",
               fontWeight: 900,
               letterSpacing: "-0.04em",
               fontFamily: "var(--font-sans), sans-serif"
             }}
           >
-            Sabbir Hasan
+            {portfolioData.name.toUpperCase()}
           </text>
         </svg>
       </div>
