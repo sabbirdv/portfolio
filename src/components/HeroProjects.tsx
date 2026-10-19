@@ -447,7 +447,7 @@ export default function HeroProjects() {
                       }}
                       className="flex items-center justify-between z-20 w-full pointer-events-auto transform-gpu"
                     >
-                      <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-semibold text-cyan-300 bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md shadow-md">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-semibold text-cyan-300 bg-black/20 border border-cyan-500/35 backdrop-blur-md shadow-md">
                         <span
                           className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shadow-[0_0_8px]"
                           style={{
@@ -467,7 +467,7 @@ export default function HeroProjects() {
                             rel="noopener noreferrer"
                             title="View GitHub Repository"
                             onClick={(e) => e.stopPropagation()}
-                            className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-white hover:border-[#00F0FF] hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
+                            className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-black/20 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-white hover:border-[#00F0FF] hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
                           >
                             <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                           </a>
@@ -478,7 +478,7 @@ export default function HeroProjects() {
                           rel="noopener noreferrer"
                           title="Open Live Preview"
                           onClick={(e) => e.stopPropagation()}
-                          className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_15px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
+                          className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-black/20 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_15px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
                         >
                           <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
                         </a>
@@ -496,13 +496,13 @@ export default function HeroProjects() {
                       }}
                       className="z-20 w-full pointer-events-auto transform-gpu"
                     >
-                      <div className="p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#05070A]/90 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.65)] flex flex-col gap-1.5 sm:gap-2.5 w-full">
-                        {/* Tech tags: hidden on mobile to keep image 100% visible, visible on sm+ */}
+                      <div className="p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-black/10 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.3),_inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-1.5 sm:gap-2.5 w-full">
+                        {/* Tech tags: hidden on mobile to keep image 100% visible, visible on sm+ (strictly max 3) */}
                         <div className="hidden sm:flex flex-wrap gap-1.5">
-                          {project.tags.map((tag) => (
+                          {project.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#070D1A]/95 border border-cyan-500/30 text-cyan-200"
+                              className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-black/30 backdrop-blur-sm border border-cyan-500/35 text-cyan-200 shadow-sm"
                             >
                               {tag}
                             </span>
@@ -517,11 +517,11 @@ export default function HeroProjects() {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate"
+                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                             >
                               {project.title}
                             </a>
-                            <p className="hidden sm:block text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed">
+                            <p className="hidden sm:block text-xs text-slate-200 line-clamp-1 mt-0.5 leading-relaxed drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)]">
                               {project.description}
                             </p>
                           </div>
@@ -533,7 +533,7 @@ export default function HeroProjects() {
                             rel="noopener noreferrer"
                             title="Open Live Preview"
                             onClick={(e) => e.stopPropagation()}
-                            className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/60 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
+                            className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold bg-[#00F0FF]/20 border border-cyan-400/70 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] backdrop-blur-sm transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
                           >
                             <span>Live Demo</span>
                             <ArrowUpRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
