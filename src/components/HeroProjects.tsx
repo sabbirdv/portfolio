@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import { GithubIcon } from "@/components/Icons";
 import { portfolioData, Project } from "@/data/portfolio";
 
 // Looping Typewriter for Role Headline
@@ -61,10 +62,12 @@ function TypewriterRole() {
 
 // Project Initial 3D Deck Angles (Fan angle deck matching Austin Serb)
 const initialDeckAngles = [
-  { rotZ: 0, rotX: 3, rotY: -2, zIndex: 44 },
-  { rotZ: -6, rotX: 4, rotY: 2, zIndex: 43 },
-  { rotZ: 7, rotX: 2, rotY: -3, zIndex: 42 },
-  { rotZ: 12, rotX: 3, rotY: 3, zIndex: 41 }
+  { rotZ: 0, rotX: 3, rotY: -2, zIndex: 46 },
+  { rotZ: -5, rotX: 4, rotY: 2, zIndex: 45 },
+  { rotZ: 6, rotX: 2, rotY: -3, zIndex: 44 },
+  { rotZ: -9, rotX: 3, rotY: 3, zIndex: 43 },
+  { rotZ: 10, rotX: 2, rotY: -2, zIndex: 42 },
+  { rotZ: -14, rotX: 4, rotY: 2, zIndex: 41 }
 ];
 
 export default function HeroProjects() {
@@ -81,7 +84,9 @@ export default function HeroProjects() {
     { x: 300, y: -580 },
     { x: -300, y: -580 },
     { x: 300, y: -980 },
-    { x: -300, y: -980 }
+    { x: -300, y: -980 },
+    { x: 300, y: -1380 },
+    { x: -300, y: -1380 }
   ]);
 
   // Recalculate exact pixel deltas on mount and resize
@@ -152,7 +157,7 @@ export default function HeroProjects() {
   const heroOpacity = useTransform(smoothProgress, [0, 0.45], [1, 0.25]);
   const heroY = useTransform(smoothProgress, [0, 0.45], [0, -35]);
 
-  const projects = portfolioData.projects.slice(0, 4);
+  const projects = portfolioData.projects;
 
   return (
     <div ref={containerRef} className="relative w-full overflow-hidden">
@@ -427,9 +432,24 @@ function ProjectCardItem({
               {project.category}
             </span>
 
-            {/* Top-Right Quick Link Icon */}
-            <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/80 border border-white/15 flex items-center justify-center text-slate-300 group-hover:text-black group-hover:bg-[#00F0FF] group-hover:border-[#00F0FF] group-hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md">
-              <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            {/* Top-Right Quick Link Icons: GitHub & Live Demo */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {project.githubUrl && (
+                <button
+                  type="button"
+                  title="View GitHub Repository"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(project.githubUrl, "_blank", "noopener,noreferrer");
+                  }}
+                  className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/80 border border-white/15 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/15 hover:border-cyan-400 hover:shadow-[0_0_12px_rgba(0,240,255,0.4)] transition-all duration-300 shadow-md cursor-pointer"
+                >
+                  <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                </button>
+              )}
+              <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/80 border border-white/15 flex items-center justify-center text-slate-300 group-hover:text-black group-hover:bg-[#00F0FF] group-hover:border-[#00F0FF] group-hover:shadow-[0_0_12px_#00F0FF] transition-all duration-300 shadow-md">
+                <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
             </div>
           </motion.div>
 
