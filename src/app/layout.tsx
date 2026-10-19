@@ -65,13 +65,13 @@ export default function RootLayout({
         <SplashCursor
           colors={['#00F0FF', '#10B981', '#A855F7', '#00FF88', '#3B82F6', '#EC4899']}
           rainbow={false}
-          colorSpeed={1.3}
-          intensity={1.25}
-          swirl={3.5}
-          trail={1.1}
-          glow={0.5}
-          shading={0.8}
-          force={1.1}
+          colorSpeed={1.2}
+          intensity={0.75}
+          swirl={3.0}
+          trail={0.8}
+          glow={0.2}
+          shading={0.5}
+          force={0.85}
           zIndex={0}
         />
         {children}

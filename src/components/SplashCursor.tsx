@@ -719,20 +719,20 @@ function SplashCursor({
       gl.uniform1i(u.uTarget, velocity.read.attach(0));
       gl.uniform1f(u.aspectRatio, aspect);
       gl.uniform2f(u.point, x, y);
-      gl.uniform1f(u.radius, radiusFor(3));
-      gl.uniform1f(u.strength, 1100 * s.force);
+      gl.uniform1f(u.radius, radiusFor(2));
+      gl.uniform1f(u.strength, 500 * s.force);
       gl.uniform1f(u.seed, seed);
       blit(velocity.write);
       velocity.swap();
       const offset = Math.random();
-      const amount = 1.6 * s.intensity;
+      const amount = 0.7 * s.intensity;
       const first = inkFor(colorAt(offset, now), amount);
       const second = inkFor(colorAt(offset + 0.3, now), amount);
       u = use('crown');
       gl.uniform1i(u.uTarget, dye.read.attach(0));
       gl.uniform1f(u.aspectRatio, aspect);
       gl.uniform2f(u.point, x, y);
-      gl.uniform1f(u.radius, radiusFor(1.6));
+      gl.uniform1f(u.radius, radiusFor(1.2));
       gl.uniform3f(u.colorA, first[0], first[1], first[2]);
       gl.uniform3f(u.colorB, second[0], second[1], second[2]);
       gl.uniform1f(u.seed, seed);
@@ -992,16 +992,8 @@ function SplashCursor({
     };
     const onRestored = () => setGeneration(value => value + 1);
 
-    const onWheel = (event: WheelEvent) => {
-      track('wheel', event.clientX, event.clientY);
-      if (Math.abs(event.deltaY) > 8) {
-        press(event.clientX, event.clientY);
-      }
-    };
-
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
-    window.addEventListener('wheel', onWheel, { passive: true });
     window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('touchmove', onTouchMove, { passive: true });
     window.addEventListener('touchend', onTouchEnd, { passive: true });
@@ -1018,7 +1010,6 @@ function SplashCursor({
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('wheel', onWheel);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
