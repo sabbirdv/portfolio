@@ -110,7 +110,7 @@ export default function HeroProjects() {
 
     // Cache viewport & target measurements once (decoupled from scroll)
     const updateMeasurements = () => {
-      const desktop = window.innerWidth >= 1024;
+      const desktop = window.innerWidth >= 768; // md breakpoint for tablet & desktop
       isDesktopRef.current = desktop;
 
       const targetEl = desktop
@@ -164,7 +164,8 @@ export default function HeroProjects() {
 
       const p = currentProgress;
       const remaining = 1 - p;
-      const initialScale = isDesktop ? 0.82 : 0.42;
+      const initialScale = isDesktop ? 0.82 : 0.33;
+      const rotZMultiplier = isDesktop ? 1.0 : 0.6;
       const scale = initialScale + (1 - initialScale) * p;
 
       // 1. Update Hero Text Opacity & Translation (Composite only)
@@ -205,7 +206,7 @@ export default function HeroProjects() {
           const offset = offsets[i] || { x: 0, y: 0 };
           const x = (offset.x * remaining).toFixed(1);
           const y = (offset.y * remaining).toFixed(1);
-          const rotZ = (config.rotZ * remaining).toFixed(2);
+          const rotZ = (config.rotZ * rotZMultiplier * remaining).toFixed(2);
           const s = scale.toFixed(3);
 
           innerEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s}) rotate(${rotZ}deg)`;
@@ -281,37 +282,37 @@ export default function HeroProjects() {
         className="relative min-h-[82vh] lg:min-h-[88vh] flex items-center pt-24 sm:pt-28 pb-10 sm:pb-12"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-8 items-center">
             {/* HERO LEFT COLUMN */}
             <div
               ref={heroTextRef}
-              className="lg:col-span-7 flex flex-col items-start gap-5 sm:gap-6 z-10 w-full transform-gpu"
+              className="md:col-span-7 flex flex-col items-start gap-4 sm:gap-6 z-10 w-full transform-gpu"
               style={{ willChange: "transform, opacity", backfaceVisibility: "hidden" }}
             >
-              {/* Glowing Emerald Available for Hire Badge */}
-              <div className="inline-flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#071311]/80 border border-emerald-500/40 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              {/* Glowing Emerald Available for Hire Badge (Compact on mobile to prevent overlap) */}
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#071311]/80 border border-emerald-500/40 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.2)] mb-1">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
                 </span>
-                <span className="text-xs font-semibold text-emerald-300 tracking-wide font-mono">
-                  Available for Hire / Bangladesh
+                <span className="text-xs font-semibold text-emerald-300 tracking-wide font-mono whitespace-nowrap">
+                  Available for Hire<span className="hidden sm:inline"> / Bangladesh</span>
                 </span>
               </div>
 
               {/* Bold Headline + Mobile Deck Anchor Slot */}
-              <div className="flex items-center justify-between gap-3 sm:gap-4 w-full">
-                <div className="flex-1 min-w-0 space-y-1 sm:space-y-1.5">
-                  <span className="block text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+              <div className="flex items-center justify-between gap-2 sm:gap-4 w-full">
+                <div className="flex-1 min-w-0 space-y-1 sm:space-y-1.5 pr-2">
+                  <span className="block text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
                     Sabbir Hasan
                   </span>
                   <TypewriterRole />
                 </div>
 
-                {/* Right (Mobile Only): 3D Card Deck Anchor Slot matching Austin Serb mobile screenshot */}
+                {/* Right (Mobile Only <768px): Calibrated Card Deck Anchor Slot */}
                 <div
                   ref={mobileStackTargetRef}
-                  className="block lg:hidden shrink-0 w-[145px] sm:w-[175px] h-[95px] sm:h-[115px] relative"
+                  className="block md:hidden shrink-0 w-[115px] sm:w-[130px] h-[78px] sm:h-[90px] relative"
                   aria-hidden="true"
                 />
               </div>
@@ -353,21 +354,21 @@ export default function HeroProjects() {
               </div>
             </div>
 
-            {/* HERO RIGHT COLUMN (Desktop Only: Stack Landing Anchor) */}
+            {/* HERO RIGHT COLUMN (Tablet & Desktop md+: Stack Landing Anchor) */}
             <div
               ref={desktopStackTargetRef}
-              className="hidden lg:flex lg:col-span-5 relative h-[380px] sm:h-[420px] w-full items-center justify-center"
+              className="hidden md:flex md:col-span-5 relative h-[360px] lg:h-[420px] w-full items-center justify-center overflow-visible"
               aria-hidden="true"
             >
-              <div className="absolute w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
-              <div className="absolute w-64 h-64 rounded-full bg-purple-500/15 blur-3xl pointer-events-none" />
+              <div className="absolute w-72 h-72 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
+              <div className="absolute w-60 h-60 rounded-full bg-purple-500/15 blur-3xl pointer-events-none" />
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 2. LATEST PROJECTS SECTION (1-Col Mobile, 2-Col Desktop) */}
+      {/* 2. LATEST PROJECTS SECTION (1-Col Mobile, 2-Col Tablet/Desktop) */}
       {/* ======================================================== */}
       <section id="projects" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-28">
         {/* Section Header */}
@@ -383,8 +384,8 @@ export default function HeroProjects() {
           </div>
         </div>
 
-        {/* Responsive Grid: 1-Column on Mobile, 2-Column on Desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 relative z-40">
+        {/* Responsive Grid: 1-Column on Mobile, 2-Column on Tablet & Desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 relative z-40">
           {projects.map((project, index) => {
             return (
               <div
