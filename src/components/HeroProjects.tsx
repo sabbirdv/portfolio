@@ -372,7 +372,7 @@ function ProjectCardItem({
   return (
     <div
       ref={cardRef}
-      className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px]"
+      className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
     >
       <motion.div
         style={{
@@ -385,11 +385,11 @@ function ProjectCardItem({
           zIndex: mounted ? cardZIndex : 10,
           transformStyle: "preserve-3d"
         }}
-        className="w-full h-full transform-gpu will-change-transform contain-content origin-center"
+        className="w-full h-full transform-gpu will-change-transform overflow-visible origin-center rounded-2xl sm:rounded-3xl"
       >
         <div
           onClick={() => window.open(project.liveUrl, "_blank", "noopener,noreferrer")}
-          className="group cursor-pointer relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden isolate bg-[#0A0F1D] border border-white/15 backdrop-blur-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_35px_rgba(0,240,255,0.4),0_20px_50px_rgba(0,0,0,0.85)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
+          className="group cursor-pointer relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden isolate bg-[#0A0F1D] border border-white/15 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-300 ease-out hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:-translate-y-1.5 flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none"
         >
           {/* Specular Diagonal Glass Highlight */}
           <div className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.12] via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
