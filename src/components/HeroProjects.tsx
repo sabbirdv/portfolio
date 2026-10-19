@@ -496,7 +496,19 @@ export default function HeroProjects() {
                       }}
                       className="z-20 w-full pointer-events-auto transform-gpu"
                     >
-                      <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.4),_inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-1 w-full">
+                      <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.4),_inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-1.5 sm:gap-2 w-full">
+                        {/* Tech tags: 3 pills visible on both mobile and desktop */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono font-medium bg-black/50 backdrop-blur-sm border border-cyan-500/35 text-cyan-200 shadow-sm"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
                         {/* Title Row + Action Button */}
                         <div className="flex items-center justify-between gap-2.5 sm:gap-4">
                           <div className="flex-1 min-w-0">
@@ -505,13 +517,10 @@ export default function HeroProjects() {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="relative z-30 block text-sm sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate"
+                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate"
                             >
                               {project.title}
                             </a>
-                            <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 mt-0.5 leading-relaxed">
-                              {project.description}
-                            </p>
                           </div>
 
                           {/* Action Button: Live Demo */}
@@ -521,7 +530,7 @@ export default function HeroProjects() {
                             rel="noopener noreferrer"
                             title="Open Live Preview"
                             onClick={(e) => e.stopPropagation()}
-                            className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold bg-[#00F0FF]/20 border border-cyan-400/70 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] backdrop-blur-sm transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
+                            className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-sm font-bold bg-[#00F0FF]/20 border border-cyan-400/70 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] backdrop-blur-sm transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
                           >
                             <span>Live Demo</span>
                             <ArrowUpRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
