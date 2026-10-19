@@ -21,11 +21,11 @@ export default function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="glass-panel glass-highlight-top relative max-w-3xl mx-auto rounded-3xl p-8 sm:p-12 lg:p-14 text-center flex flex-col items-center gap-8"
+        className="glass-panel glass-highlight-top relative max-w-3xl mx-auto rounded-3xl p-6 sm:p-12 lg:p-14 text-center flex flex-col items-center gap-7 sm:gap-8"
       >
         {/* Top: Avatar and Profile Info */}
-        <div className="flex items-center gap-3.5 p-2 rounded-full glass-pill pr-5">
-          <div className="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)]">
+        <div className="flex items-center gap-3 p-1.5 sm:p-2 rounded-full glass-pill pr-4 sm:pr-5 max-w-full">
+          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden ring-2 ring-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)] shrink-0">
             <Image
               src={portfolioData.avatar}
               alt={portfolioData.name}
@@ -33,13 +33,17 @@ export default function Contact() {
               className="object-cover"
             />
           </div>
-          <div className="flex flex-col text-left">
-            <span className="text-sm font-bold text-white tracking-tight">
+          <div className="flex flex-col text-left min-w-0">
+            <span className="text-xs sm:text-sm font-bold text-white tracking-tight">
               {portfolioData.name}
             </span>
-            <span className="text-xs text-emerald-400 font-mono">
-              ● {portfolioData.availability}
-            </span>
+            <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-emerald-400 font-mono whitespace-nowrap">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+              </span>
+              <span>{portfolioData.availability}</span>
+            </div>
           </div>
         </div>
 
