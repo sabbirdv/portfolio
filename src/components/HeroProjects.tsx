@@ -517,11 +517,11 @@ export default function HeroProjects() {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate"
                             >
                               {project.title}
                             </a>
-                            <p className="hidden sm:block text-xs text-slate-200 line-clamp-1 mt-0.5 leading-relaxed drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)]">
+                            <p className="hidden sm:block text-xs text-slate-200 line-clamp-1 mt-0.5 leading-relaxed">
                               {project.description}
                             </p>
                           </div>
