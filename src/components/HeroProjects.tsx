@@ -396,7 +396,7 @@ export default function HeroProjects() {
                 style={{
                   zIndex: mounted ? (DECK_CONFIG[index]?.zIndex || 10) + 20 : 20
                 }}
-                className="relative w-full h-[240px] sm:h-[280px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
+                className="relative w-full h-[250px] sm:h-[290px] md:h-[340px] lg:h-[390px] overflow-visible rounded-2xl sm:rounded-3xl"
               >
                 {/* Hardware-accelerated GPU Composite Layer */}
                 <div
@@ -409,8 +409,8 @@ export default function HeroProjects() {
                   }}
                   className="w-full h-full transform-gpu overflow-visible origin-center rounded-2xl sm:rounded-3xl"
                 >
-                  <div className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden glass-card glass-card-interactive flex flex-col justify-between p-4 sm:p-6 lg:p-7 select-none">
-                    {/* Layer 0: Full-bleed Project Image (100% bright, visible, hardware-decoded) */}
+                  <div className="group relative h-full w-full rounded-2xl sm:rounded-3xl overflow-hidden glass-card glass-card-interactive flex flex-col justify-between p-3 sm:p-5 lg:p-6 select-none">
+                    {/* Layer 0: Full-bleed Project Image (100% clean, crisp, no dark overlay) */}
                     <div className="absolute inset-0 z-0 rounded-2xl sm:rounded-3xl overflow-hidden">
                       <Image
                         src={project.image}
@@ -422,10 +422,6 @@ export default function HeroProjects() {
                         loading={index < 2 ? "eager" : "lazy"}
                         decoding="async"
                       />
-                      {/* Top vignette to protect top badges from bright/white image backgrounds */}
-                      <div className="absolute inset-x-0 top-0 h-28 rounded-t-2xl sm:rounded-t-3xl bg-gradient-to-b from-[#05070A]/85 via-[#05070A]/40 to-transparent pointer-events-none z-[1]" />
-                      {/* Bottom shadow overlay behind title, description, and tech tags */}
-                      <div className="absolute inset-x-0 bottom-0 h-48 rounded-b-2xl sm:rounded-b-3xl bg-gradient-to-t from-[#05070A]/95 via-[#05070A]/65 to-transparent pointer-events-none z-[1]" />
                     </div>
 
                     {/* Layer 1: Specular Diagonal Glass Highlight */}
@@ -451,7 +447,7 @@ export default function HeroProjects() {
                       }}
                       className="flex items-center justify-between z-20 w-full pointer-events-auto transform-gpu"
                     >
-                      <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-mono font-medium text-cyan-300 bg-[#070D1A]/95 border border-cyan-500/35 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-semibold text-cyan-300 bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md shadow-md">
                         <span
                           className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shadow-[0_0_8px]"
                           style={{
@@ -471,7 +467,7 @@ export default function HeroProjects() {
                             rel="noopener noreferrer"
                             title="View GitHub Repository"
                             onClick={(e) => e.stopPropagation()}
-                            className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#070D1A]/95 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-white hover:border-[#00F0FF] hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
+                            className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-white hover:border-[#00F0FF] hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300 shadow-md cursor-pointer relative z-30"
                           >
                             <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                           </a>
@@ -482,14 +478,14 @@ export default function HeroProjects() {
                           rel="noopener noreferrer"
                           title="Open Live Preview"
                           onClick={(e) => e.stopPropagation()}
-                          className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#070D1A]/95 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_15px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
+                          className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-[#05070A]/90 border border-cyan-500/35 backdrop-blur-md flex items-center justify-center text-cyan-300 hover:text-black hover:bg-[#00F0FF] hover:border-[#00F0FF] hover:shadow-[0_0_15px_#00F0FF] transition-all duration-300 shadow-md relative z-30 cursor-pointer"
                         >
                           <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
                         </a>
                       </div>
                     </div>
 
-                    {/* Layer 3: BOTTOM BAR (Tech tags, Title, and Action Link Button) */}
+                    {/* Layer 3: BOTTOM BAR (Floating Frosted Glass Capsule - driven by decoupled rAF) */}
                     <div
                       ref={(el) => {
                         detailsBottomRefs.current[index] = el;
@@ -498,48 +494,51 @@ export default function HeroProjects() {
                         backfaceVisibility: "hidden",
                         transform: "translate3d(0, 0, 0)"
                       }}
-                      className="z-20 flex flex-col gap-2.5 sm:gap-3 w-full pointer-events-auto transform-gpu"
+                      className="z-20 w-full pointer-events-auto transform-gpu"
                     >
-                      {/* Tech Tags */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-mono font-medium bg-[#070D1A]/95 border border-cyan-500/30 text-cyan-200 shadow-md backdrop-blur-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                      <div className="p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#05070A]/90 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.65)] flex flex-col gap-1.5 sm:gap-2.5 w-full">
+                        {/* Tech tags: hidden on mobile to keep image 100% visible, visible on sm+ */}
+                        <div className="hidden sm:flex flex-wrap gap-1.5">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#070D1A]/95 border border-cyan-500/30 text-cyan-200"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
 
-                      <div className="flex items-end justify-between gap-3 sm:gap-4 mt-0.5">
-                        <div className="flex-1 min-w-0">
+                        {/* Title Row + Action Button */}
+                        <div className="flex items-center justify-between gap-2 sm:gap-4">
+                          <div className="flex-1 min-w-0">
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="relative z-30 block text-xs sm:text-lg lg:text-xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors truncate"
+                            >
+                              {project.title}
+                            </a>
+                            <p className="hidden sm:block text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed">
+                              {project.description}
+                            </p>
+                          </div>
+
+                          {/* Action Button: Live Demo */}
                           <a
                             href={project.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            title="Open Live Preview"
                             onClick={(e) => e.stopPropagation()}
-                            className="relative z-30 block text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight hover:text-[#00F0FF] transition-colors drop-shadow-md truncate"
+                            className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/60 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
                           >
-                            {project.title}
+                            <span>Live Demo</span>
+                            <ArrowUpRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                           </a>
-                          <p className="text-[11px] sm:text-xs text-slate-300 line-clamp-1 mt-0.5 leading-relaxed drop-shadow-sm">
-                            {project.description}
-                          </p>
                         </div>
-
-                        {/* Action Button: Native Anchor Link */}
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title="Open Live Preview"
-                          onClick={(e) => e.stopPropagation()}
-                          className="relative z-30 inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold bg-[#00F0FF]/15 border border-cyan-400/60 text-[#00F0FF] shadow-[0_4px_16px_rgba(0,240,255,0.25),_inset_0_1px_0_rgba(255,255,255,0.2)] hover:bg-[#00F0FF] hover:text-black hover:border-[#00F0FF] hover:shadow-[0_0_25px_rgba(0,240,255,0.8)] transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer"
-                        >
-                          <span>Live Demo</span>
-                          <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </a>
                       </div>
                     </div>
                   </div>
